@@ -2,7 +2,7 @@
 
 Raspberry PI and Arduino powered brewery.
 
-## apache 2
+## dependencies
 
 ### packages
 
@@ -12,6 +12,8 @@ apt-get install python3-serial
 pip3 install mysqlclient
 apt-get install apache2 libapache2-mod-wsgi-py3
 ```
+
+## configuration
 
 ### /etc/apache2/sites-enabled/000-default.conf
 
