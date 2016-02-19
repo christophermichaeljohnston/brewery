@@ -3,6 +3,15 @@
 Raspberry PI and Arduino powered brewery.
 
 ## apache 2
+
+### packages
+
+```
+apt-get install apache2 libapache2-mod-wsgi-py3
+```
+
+### /etc/apache2/sites-enabled/000-default.conf
+
 ```
 Alias /media/ /var/www/brewery-media/
 Alias /static/ /var/www/brewery-static/
