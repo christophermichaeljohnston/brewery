@@ -1,11 +1,15 @@
 {% extends "base/index.html" %}
 {% block content %}
-<a class="btn btn-default" href="{% url 'device:discover' %}" role="button">Discover</a>
+<h1>Devices</h1>
+<table class="table">
+<thead><tr><th class=col-xs-1>id</th><th class=col-xs11>path</th></tr></thead>
 {% if serial_list %}
-  <ul>
-    {% for serial in serial_list %}
-      <li>{{serial.path}}</li>
-    {% endfor %}
-  </ul>
+<tbody>
+{% for serial in serial_list %}
+<tr><td>{{ serial.id }}</td><td>{{ serial.path }}</td></tr>
+{% endfor %}
 {% endif %}
+</tbody>
+</table>
+<a class="btn btn-default" href="{% url 'device:discover' %}" role="button">Discover</a>
 {% endblock content %}

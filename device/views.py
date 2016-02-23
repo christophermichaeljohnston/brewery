@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import generic
 
 from .models import Serial
+
+import serial
+ser = {}
 
 class IndexView(generic.ListView):
   template_name = 'device/index.html'
@@ -11,8 +14,7 @@ class IndexView(generic.ListView):
 
 def discover(request):
   import glob
-  data = ""
   for file in glob.glob("/dev/ttyACM*"):
     if not Serial.objects.filter(path=file).exists():
       Serial.objects.create(path=file)
-  return render(request, 'device/discover.html', {'data': data})
+  return redirect('device:index')
