@@ -1,20 +1,19 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views import generic
 
-from .models import Type, Serial
+from .models import Fermenter, Keezer
 
-class TypeView(generic.ListView):
-  def get_queryset(self):
-    return Type.objects.order_by('name')
-
-class SerialView(generic.ListView):
-  model = Serial
-  def get_queryset(self):
-    return Serial.objects.order_by('path')
-
-def serial_discover(request):
+def discover(request):
   import glob
   for file in glob.glob("/dev/ttyACM*"):
     if not Serial.objects.filter(path=file).exists():
       Serial.objects.create(path=file)
-  return redirect('equipment:serial')
+  return render(request, 'equipment/discover.html')
+
+class FermentersView(generic.ListView):
+  def get_queryset(self):
+    return Fermenter.objects.order_by('tag')
+
+class KeezersView(generic.ListView):
+  def get_queryset(self):
+    return Keezer.objects.order_by('tag')

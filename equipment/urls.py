@@ -4,7 +4,7 @@ from . import views
 
 app_name = 'equipment'
 urlpatterns = [
-    url(r'^type$', views.TypeView.as_view(), name='type'),
-    url(r'^serial$', views.SerialView.as_view(), name='serial'),
-    url(r'^serial_discover$', views.serial_discover, name='serial_discover'),
+    url(r'^discover$',   views.discover,                 name='discover'),
+    url(r'^fermenters$', views.FermentersView.as_view(), name='fermenters'),
+    url(r'^keezers$',    views.KeezersView.as_view(),    name='keezers'),
 ]
