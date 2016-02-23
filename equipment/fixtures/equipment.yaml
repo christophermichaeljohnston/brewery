@@ -1,0 +1,8 @@
+- model: equipment.Type
+  pk: 1
+  fields:
+    name: FERMENTER
+- model: equipment.Type
+  pk: 2
+  fields:
+    name: KEEZER
