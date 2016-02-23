@@ -29,9 +29,9 @@ Require all granted
 Require all granted
 </Directory>
 
-WSGIDaemonProcess localhost python-path=/var/www/brewery
-WSGIProcessGroup localhost
-WSGIScriptAlias / /var/www/brewery/brewery/wsgi.py process-group=localhost
+WSGIDaemonProcess brewery python-path=/var/www/brewery user=pi group=dialout
+WSGIProcessGroup brewery
+WSGIScriptAlias / /var/www/brewery/brewery/wsgi.py process-group=brewery
 
 <Directory /var/www/brewery/brewery>
 <Files wsgi.py>
