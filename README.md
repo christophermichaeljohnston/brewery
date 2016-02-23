@@ -40,3 +40,10 @@ Require all granted
 </Files>
 </Directory>
 ```
+
+## deployment
+
+```
+python manage.py migrate
+pythong mnaage.py loaddata equipment
+```
