@@ -66,6 +66,5 @@ def fermenter_create_or_update(dev):
   f = Fermenter.objects.get(sn=sn)
   if not f.exists():
     f = Fermenter(sn=sn)
-    f.save()
   f.dev = dev
   f.save()
