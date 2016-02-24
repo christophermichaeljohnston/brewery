@@ -4,11 +4,13 @@ from django.views import generic
 from .models import Fermenter, Keezer
 
 def discover(request):
-#  import glob
-#  for file in glob.glob("/dev/ttyACM*"):
+  log = "";
+  import glob
+  for file in glob.glob("/dev/ttyACM*"):
+    log += file + "\n";
 #    if not Serial.objects.filter(path=file).exists():
 #      Serial.objects.create(path=file)
-  return render(request, 'equipment/discover.html')
+  return render(request, 'equipment/discover.html', {'log': log})
 
 class FermentersView(generic.ListView):
   def get_queryset(self):
