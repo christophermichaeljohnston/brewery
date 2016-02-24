@@ -1,6 +1,6 @@
 # brewery
 
-Raspberry PI and Arduino powered brewery.
+Arduino and Raspberry PI powered brewery.
 
 ## dependencies
 
