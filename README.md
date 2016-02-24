@@ -8,6 +8,7 @@ Arduino and Raspberry PI powered brewery.
 
 ```
 apt-get install python3 python3-pip
+apt-get install python-django
 apt-get install python3-serial
 pip3 install mysqlclient
 apt-get install apache2 libapache2-mod-wsgi-py3
