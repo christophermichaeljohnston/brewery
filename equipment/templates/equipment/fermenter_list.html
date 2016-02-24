@@ -5,8 +5,8 @@
   <thead>
     <tr>
       <th class="col-xs-1">id</th>
-      <th class="col-xs-1">serial</th>
-      <th class="col-xs-1">tag</th>
+      <th class="col-xs-1">sn</th>
+      <th class="col-xs-1">dev</th>
       <th class="col-xs-8"></th>
     </tr>
   </thead>
@@ -15,8 +15,8 @@
 {% for fermenter in fermenter_list %}
     <tr>
       <td>{{ fermenter.id }}</td>
-      <td>{{ fermenter.serial }}</td>
-      <td>{{ fermenter.tag }}</td>
+      <td>{{ fermenter.sn }}</td>
+      <td>{{ fermenter.dev }}</td>
     </tr>
 {% endfor %}
 {% endif %}

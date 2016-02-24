@@ -5,8 +5,8 @@
   <thead>
     <tr>
       <th class="col-xs-1">id</th>
-      <th class="col-xs-1">serial</th>
-      <th class="col-xs-1">tag</th>
+      <th class="col-xs-1">sn</th>
+      <th class="col-xs-1">dev</th>
       <th class="col-xs-8"></th>
     </tr>
   </thead>
@@ -15,8 +15,8 @@
 {% for keezer in keezer_list %}
     <tr>
       <td>{{ keezer.id }}</td>
-      <td>{{ keezer.serial }}</td>
-      <td>{{ keezer.tag }}</td>
+      <td>{{ keezer.sn }}</td>
+      <td>{{ keezer.dev }}</td>
     </tr>
 {% endfor %}
 {% endif %}

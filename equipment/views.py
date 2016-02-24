@@ -12,11 +12,11 @@ serial_device = {}
 
 class FermentersView(generic.ListView):
   def get_queryset(self):
-    return Fermenter.objects.order_by('tag')
+    return Fermenter.objects.order_by('sn')
 
 class KeezersView(generic.ListView):
   def get_queryset(self):
-    return Keezer.objects.order_by('tag')
+    return Keezer.objects.order_by('sn')
 
 def discover(request):
   log = "Discovering equipment...\n";
@@ -47,8 +47,9 @@ def equipment_create_or_update(file):
     fermenter_create_or_update(file)
 
 def fermenter_create_or_update(file):
-  f = Fermenter.objects.get(serial=file)
+  sn = serial_cmd(file, "getSN")
+  f = Fermenter.objects.get(sn=sn)
   if not f.exists():
-    f = Fermenter(serial=file, tag=serial_cmd(file, "getTag"))
+    f = Fermenter(dev=file, sn=sn)
     f.save()
 

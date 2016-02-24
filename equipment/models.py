@@ -1,9 +1,9 @@
 from django.db import models
 
 class Fermenter(models.Model):
-  serial = models.CharField(max_length=12, blank=False, default=None)
-  tag    = models.CharField(max_length=16, blank=True, default="")
+  sn  = models.CharField(max_length=16, blank=False, default=None)
+  dev = models.CharField(max_length=12, blank=False, default=None)
 
 class Keezer(models.Model):
-  serial = models.CharField(max_length=12, blank=False, default=None)
-  tag    = models.CharField(max_length=16, blank=True, default="")
+  sn  = models.CharField(max_length=16, blank=False, default=None)
+  dev = models.CharField(max_length=12, blank=False, default=None)
