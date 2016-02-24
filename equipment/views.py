@@ -19,7 +19,10 @@ class KeezersView(generic.ListView):
     return Keezer.objects.order_by('sn')
 
 def discover(request):
-  log = "Discovering equipment...\n";
+  log = "Initializing existing equipment...\n"
+  serial_close_all()
+  fermenter_remove_dev_all()
+  log = "Discovering equipment...\n"
   import glob
   for file in glob.glob(DEVICE_PATH):
     log += "Found: " + file + "\n";
@@ -34,6 +37,11 @@ def serial_open(file):
 
 def serial_close(file):
   serial_device[file].close()
+
+def serial_close_all():
+  for sd in serial_device:
+    serial_close(sd)
+  serial_device = {}
 
 def serial_cmd(file, cmd):
   serial_device[file].flushInput()
@@ -50,6 +58,10 @@ def fermenter_create_or_update(file):
   sn = serial_cmd(file, "getSN")
   f = Fermenter.objects.get(sn=sn)
   if not f.exists():
-    f = Fermenter(dev=file, sn=sn)
+    f = Fermenter(sn=sn)
     f.save()
+  f.dev = file
+  f.save()
 
+def fermenter_remove_dev_all():
+  Fermenter.objects.all.update(dev=None)
