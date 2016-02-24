@@ -27,8 +27,8 @@ def discover(request):
   import glob
   for dev in glob.glob(DEVICE_PATH):
     log += "Found: " + dev + "\n";
-#    serial_open(dev)
-#    equipment_create_or_update(dev)
+    serial_open(dev)
+    equipment_create_or_update(dev)
   return render(request, 'equipment/discover.html', {'log': log})
 
 def serial_initialize():
