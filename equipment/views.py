@@ -27,9 +27,15 @@ def discover(request):
   import glob
   for dev in glob.glob(DEVICE_PATH):
     log += "Found: " + dev + "\n";
-    serial_open(dev)
-    equipment_create_or_update(dev)
+#    serial_open(dev)
+#    equipment_create_or_update(dev)
   return render(request, 'equipment/discover.html', {'log': log})
+
+def serial_initialize():
+  global serial_device
+  for dev in serial_device:
+    serial_close(dev)
+  serial_device = {}
 
 def serial_open(dev):
   global serial_device
@@ -39,12 +45,6 @@ def serial_open(dev):
 def serial_close(dev):
   global serial_device
   serial_device[dev].close()
-
-def serial_initialize():
-  global serial_device
-  for dev in serial_device:
-    serial_close(dev)
-  serial_device = {}
 
 def serial_cmd(dev, cmd):
   global serial_device
@@ -58,6 +58,9 @@ def equipment_create_or_update(dev):
   if type == "FERMENTER":
     fermenter_create_or_update(dev)
 
+def fermenter_initialize():
+  Fermenter.objects.all().update(dev=None)
+
 def fermenter_create_or_update(dev):
   sn = serial_cmd(dev, "getSN")
   f = Fermenter.objects.get(sn=sn)
@@ -66,6 +69,3 @@ def fermenter_create_or_update(dev):
     f.save()
   f.dev = dev
   f.save()
-
-def fermenter_initialize():
-  Fermenter.objects.all().update(dev=None)
