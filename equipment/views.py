@@ -19,10 +19,11 @@ class KeezersView(generic.ListView):
     return Keezer.objects.order_by('sn')
 
 def discover(request):
+  global serial_device
   log = "Initializing existing equipment...\n"
   serial_close_all()
   fermenter_remove_dev_all()
-  log = "Discovering equipment...\n"
+  log += "Discovering new and existing equipment...\n"
   import glob
   for file in glob.glob(DEVICE_PATH):
     log += "Found: " + file + "\n";
@@ -32,18 +33,22 @@ def discover(request):
   return render(request, 'equipment/discover.html', {'log': log})
 
 def serial_open(file):
+  global serial_device
   serial_device[file] = serial.Serial(port=file, baudrate=9600)
   time.sleep(3)
 
 def serial_close(file):
+  global serial_device
   serial_device[file].close()
 
 def serial_close_all():
+  global serial_device
   for sd in serial_device:
     serial_close(sd)
   serial_device = {}
 
 def serial_cmd(file, cmd):
+  global serial_device
   serial_device[file].flushInput()
   serial_device[file].flushOutput()
   serial_device[file].write(cmd.encode())
@@ -64,4 +69,4 @@ def fermenter_create_or_update(file):
   f.save()
 
 def fermenter_remove_dev_all():
-  Fermenter.objects.all.update(dev=None)
+  Fermenter.objects.all().update(dev=None)
