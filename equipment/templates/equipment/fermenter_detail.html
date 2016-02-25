@@ -9,6 +9,7 @@
       <th class="col-xs-1">dev</th>
       <th class="col-xs-1">mode</th>
       <th class="col-xs-1">setpoint</th>
+      <th class="col-xs-1">action</th>
     </tr>
   </thead>
 {% if fermenter %}
@@ -19,6 +20,7 @@
       <td>{{ fermenter.dev }}</td>
       <td>{{ fermenter.mode }}</td>
       <td>{{ fermenter.setpoint }}</td>
+      <td><a href="{% url 'equipment:fermenter_edit' fermenter.id %}">Update</a> 
     </tr>
 {% endif %}
   </tbody>

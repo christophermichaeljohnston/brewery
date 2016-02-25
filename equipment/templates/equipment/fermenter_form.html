@@ -1,0 +1,9 @@
+{% extends "base/index.html" %}
+{% block content %}
+<h1>Fermenter</h1>
+<form action="{% url 'equipment:fermenter_save' fermenter.id %}" method="post">
+{% csrf_token %}
+sn<input type="text" name="sn" value="{{ fermenter.sn }}" maxlength="16">
+<input type="submit" value="Save">
+</form>
+{% endblock content %}

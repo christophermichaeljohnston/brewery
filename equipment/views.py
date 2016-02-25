@@ -1,4 +1,6 @@
 from django.shortcuts import redirect, render
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.views import generic
 
 from .models import Fermenter, Keezer
@@ -16,6 +18,14 @@ class FermentersView(generic.ListView):
 
 class FermenterView(generic.DetailView):
   model = Fermenter
+
+def fermenter_edit(request, pk):
+  f = Fermenter.objects.get(pk=pk)
+  return render(request, 'equipment/fermenter_form.html', {'fermenter': f})
+
+def fermenter_save(request, pk):
+  f = Fermenter.objects.get(pk=pk)
+  return HttpResponseRedirect(reverse('equipment:fermenter', args=(f.id,)))
 
 class KeezersView(generic.ListView):
   def get_queryset(self):
