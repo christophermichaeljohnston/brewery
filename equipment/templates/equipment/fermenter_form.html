@@ -1,9 +1,10 @@
 {% extends "base/index.html" %}
 {% block content %}
 <h1>Fermenter</h1>
-<form action="{% url 'equipment:fermenter_save' fermenter.id %}" method="post">
+<form method="post" class="post-form">
 {% csrf_token %}
-sn<input type="text" name="sn" value="{{ fermenter.sn }}" maxlength="16">
-<input type="submit" value="Save">
+{{ form.as_p }}
+<button type="submit" class="save btn btn-default">Save</button>
 </form>
 {% endblock content %}
+

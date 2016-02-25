@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.views import generic
 
 from .models import Fermenter, Keezer
+from .forms import FermenterForm
 
 import time
 import serial
@@ -21,11 +22,11 @@ class FermenterView(generic.DetailView):
 
 def fermenter_edit(request, pk):
   f = Fermenter.objects.get(pk=pk)
-  return render(request, 'equipment/fermenter_form.html', {'fermenter': f})
-
-def fermenter_save(request, pk):
-  f = Fermenter.objects.get(pk=pk)
-  return HttpResponseRedirect(reverse('equipment:fermenter', args=(f.id,)))
+  if request.method == "POST":
+    return redirect('equipment:fermenter', pk=f.id)
+  else:
+    form = FermenterForm(instance=f)
+    return render(request, 'equipment/fermenter_form.html', {'form': form})
 
 class KeezersView(generic.ListView):
   def get_queryset(self):
