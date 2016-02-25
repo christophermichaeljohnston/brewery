@@ -63,7 +63,7 @@ def equipment_create_or_update(dev):
     fermenter_create_or_update(dev)
 
 def fermenter_initialize():
-  Fermenter.objects.all().update(dev=None)
+  Fermenter.objects.all().update(dev="")
 
 def fermenter_create_or_update(dev):
   sn = serial_cmd(dev, "getSN")
