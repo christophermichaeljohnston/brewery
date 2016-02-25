@@ -1,6 +1,6 @@
 {% extends "base/index.html" %}
 {% block content %}
-<h1>Fermenters</h1>
+<h1>Fermenter</h1>
 <table class="table">
   <thead>
     <tr>
@@ -10,15 +10,13 @@
       <th class="col-xs-8"></th>
     </tr>
   </thead>
-{% if fermenter_list %}
+{% if fermenter %}
   <tbody>
-{% for fermenter in fermenter_list %}
     <tr>
       <td>{{ fermenter.id }}</td>
-      <td><a href="{% url 'equipment:fermenter' fermenter.id %}">{{ fermenter.sn }}</td>
+      <td>{{ fermenter.sn }}</td>
       <td>{{ fermenter.dev }}</td>
     </tr>
-{% endfor %}
 {% endif %}
   </tbody>
 </table>

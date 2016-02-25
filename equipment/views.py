@@ -14,8 +14,8 @@ class FermentersView(generic.ListView):
   def get_queryset(self):
     return Fermenter.objects.order_by('sn')
 
-def fermenter(request):
-  return render(request, 'equipment/fermenter.html')
+class FermenterView(generic.DetailView):
+  model = Fermenter
 
 class KeezersView(generic.ListView):
   def get_queryset(self):
