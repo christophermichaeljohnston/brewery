@@ -26,7 +26,7 @@ def discover(request):
   log += "Discovering new and existing equipment...\n"
   import glob
   for dev in glob.glob(DEVICE_PATH):
-    log += "Found: " + dev + "\n";
+    log += "Found: " + dev + "\n"
     serial_open(dev)
     equipment_create_or_update(dev)
   return render(request, 'equipment/discover.html', {'log': log})
@@ -50,8 +50,9 @@ def serial_cmd(dev, cmd):
   global serial_device
   serial_device[dev].flushInput()
   serial_device[dev].flushOutput()
-  serial_device[dev].write(cmd.encode())
-  return serial_device[dev].readline().decode().rstrip('\n')
+  serial_device[dev].write((cmd+"\n").encode())
+  result = serial_device[dev].readline().decode().rstrip('\n').rstrip('\r')
+  return result
 
 def equipment_create_or_update(dev):
   type = serial_cmd(dev, "getType")
@@ -63,8 +64,9 @@ def fermenter_initialize():
 
 def fermenter_create_or_update(dev):
   sn = serial_cmd(dev, "getSN")
-  f = Fermenter.objects.get(sn=sn)
-  if not f.exists():
+  try:
+    f = Fermenter.objects.get(sn=sn)
+  except Fermenter.DoesNotExist:
     f = Fermenter(sn=sn)
   f.dev = dev
   f.save()
