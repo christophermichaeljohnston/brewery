@@ -23,6 +23,14 @@ class FermenterView(generic.DetailView):
 def fermenter_edit(request, pk):
   f = Fermenter.objects.get(pk=pk)
   if request.method == "POST":
+    form = FermenterForm(request.POST)
+    if form.is_valid():
+      print(request.POST.get("sn"))
+      print(request.POST.get("mode"))
+      print(request.POST.get("setpoint"))
+      print(request.POST.get("hysteresis"))
+      print(request.POST.get("pumprun"))
+      print(request.POST.get("pumprun"))
     return redirect('equipment:fermenter', pk=f.id)
   else:
     form = FermenterForm(instance=f)
