@@ -25,12 +25,19 @@ def fermenter_edit(request, pk):
   if request.method == "POST":
     form = FermenterForm(request.POST)
     if form.is_valid():
-      print(request.POST.get("sn"))
-      print(request.POST.get("mode"))
-      print(request.POST.get("setpoint"))
-      print(request.POST.get("hysteresis"))
-      print(request.POST.get("pumprun"))
-      print(request.POST.get("pumprun"))
+      if not f.sn == request.POST.get("sn"):
+        serial_cmd(f.dev,"setSN,"+request.POST.get("sn"))
+      if not f.mode == request.POST.get("mode"):
+        serial_cmd(f.dev,"setMode,"+request.POST.get("mode"))
+      if not float(f.setpoint) == float(request.POST.get("setpoint")):
+        serial_cmd(f.dev,"setSetpoint,"+request.POST.get("setpoint"))
+      if not float(f.hysteresis) == float(request.POST.get("hysteresis")):
+        serial_cmd(f.dev,"setHysteresis,"+request.POST.get("hysteresis"))
+      if not f.pumprun == int(request.POST.get("pumprun")):
+        serial_cmd(f.dev,"setPumpRun,"+request.POST.get("pumprun"))
+      if not f.pumpdelay == int(request.POST.get("pumpdelay")):
+        serial_cmd(f.dev,"setPumpDelay,"+request.POST.get("pumpdelay"))
+    fermenter_sync(f)
     return redirect('equipment:fermenter', pk=f.id)
   else:
     form = FermenterForm(instance=f)
@@ -73,8 +80,7 @@ def serial_cmd(dev, cmd):
   serial_device[dev].flushInput()
   serial_device[dev].flushOutput()
   serial_device[dev].write((cmd+"\n").encode())
-  result = serial_device[dev].readline().decode().rstrip('\n').rstrip('\r')
-  return result
+  return serial_device[dev].readline().decode().rstrip('\n').rstrip('\r')
 
 def equipment_create_or_update(dev):
   type = serial_cmd(dev, "getType")
@@ -91,4 +97,13 @@ def fermenter_create_or_update(dev):
   except Fermenter.DoesNotExist:
     f = Fermenter(sn=sn)
   f.dev = dev
+  f.save()
+  fermenter_sync(f)
+
+def fermenter_sync(f):
+  f.mode = serial_cmd(f.dev, "getMode")
+  f.setpoint = serial_cmd(f.dev, "getSetpoint")
+  f.hysteresis = serial_cmd(f.dev, "getHysteresis")
+  f.pumprun = serial_cmd(f.dev, "getPumpRun")
+  f.pumpdelay = serial_cmd(f.dev, "getPumpDelay")
   f.save()
