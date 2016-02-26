@@ -9,6 +9,9 @@
       <th class="col-xs-1">dev</th>
       <th class="col-xs-1">mode</th>
       <th class="col-xs-1">setpoint</th>
+      <th class="col-xs-1">hysteresis</th>
+      <th class="col-xs-1">pumprun</th>
+      <th class="col-xs-1">pumpdelay</th>
       <th class="col-xs-1">action</th>
     </tr>
   </thead>
@@ -20,6 +23,9 @@
       <td>{{ fermenter.dev }}</td>
       <td>{{ fermenter.mode }}</td>
       <td>{{ fermenter.setpoint }}</td>
+      <td>{{ fermenter.hysteresis }}</td>
+      <td>{{ fermenter.pumprun }}</td>
+      <td>{{ fermenter.pumpdelay }}</td>
       <td><a href="{% url 'equipment:fermenter_edit' fermenter.id %}">Edit</a> 
     </tr>
 {% endif %}
