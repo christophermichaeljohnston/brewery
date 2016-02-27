@@ -76,11 +76,14 @@ def serial_close(dev):
   serial_device[dev].close()
 
 def serial_cmd(dev, cmd):
+  print(cmd)
   global serial_device
   serial_device[dev].flushInput()
   serial_device[dev].flushOutput()
   serial_device[dev].write((cmd+"\n").encode())
-  return serial_device[dev].readline().decode().rstrip('\n').rstrip('\r')
+  result = serial_device[dev].readline().decode().rstrip('\n').rstrip('\r')
+  print(result)
+  return result
 
 def equipment_create_or_update(dev):
   type = serial_cmd(dev, "getType")
@@ -92,10 +95,13 @@ def fermenter_initialize():
 
 def fermenter_create_or_update(dev):
   sn = serial_cmd(dev, "getSN")
+  print(">"+sn+"<")
   try:
     f = Fermenter.objects.get(sn=sn)
+    print("found fermenter: >"+sn+"<")
   except Fermenter.DoesNotExist:
     f = Fermenter(sn=sn)
+    print("not found fermenter: >"+sn+"<")
   f.dev = dev
   f.save()
   fermenter_sync(f)
