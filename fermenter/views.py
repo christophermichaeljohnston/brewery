@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
+import json
 
 from .models import Fermenter, Temperature
 from .forms import Form
@@ -61,11 +62,12 @@ def temperature(request, pk):
   return redirect('fermenter:detail', pk=f.id)
 
 def chart(request, pk):
-  data = []
+  response = {}
+  response['data'] = []
   f = Fermenter.objects.get(pk=pk)
-  for ft in f.fermentertemperature_set.all():
-    data.append([int(ft.datetime.strftime('%s'))*1000,float(ft.value)])
-  return render(request, 'fermenter/chart.html', {'data': data})
+  for t in f.temperature_set.all():
+    response['data'].append([int(t.datetime.strftime('%s'))*1000,float(t.temperature)])
+  return HttpResponse(json.dumps(response), content_type="application/json")
 
 def sync(f):
   f.tag = PortAPI.cmd(f.sn, "getTag")
