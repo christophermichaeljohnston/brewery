@@ -6,4 +6,5 @@ class Port(models.Model):
     ('K', 'Keezer'),
   )
   port = models.CharField(max_length=16)
+  sn   = models.CharField(max_length=16)
   type = models.CharField(max_length=1, choices=TYPES)

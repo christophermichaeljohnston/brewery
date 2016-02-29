@@ -1,0 +1,28 @@
+{% extends "base/index.html" %}
+{% block content %}
+<h1>Ports</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th class="col-xs-1">id</th>
+      <th class="col-xs-1">port</th>
+      <th class="col-xs-1">sn</th>
+      <th class="col-xs-1">type</th>
+      <th class="col-xs-8"></th>
+    </tr>
+  </thead>
+{% if port_list %}
+  <tbody>
+{% for port in port_list %}
+    <tr>
+      <td>{{ port.id }}</td>
+      <td><a href="{% url 'port:detail' port.id %}">{{ port.port }}</td>
+      <td>{{ port.sn }}</td>
+      <td>{{ port.type }}</td>
+    </tr>
+{% endfor %}
+{% endif %}
+  </tbody>
+</table>
+{% endblock content %}
+

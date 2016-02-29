@@ -7,6 +7,7 @@ from django.utils import timezone
 from .models import Fermenter, Temperature
 from .forms import Form
 
+from port.models import Port
 from port.views import PortAPI
 
 class ListView(generic.ListView):
@@ -17,6 +18,11 @@ class ListView(generic.ListView):
 class DetailView(generic.DetailView):
   template_name = "fermenter/detail.html"
   model = Fermenter
+
+def discover(request):
+  for port in Port.objects.filter(type='F'):
+    print(port.sn)
+  return redirect('fermenter:list')
 
 def edit(request, pk):
   f = Fermenter.objects.get(pk=pk)
