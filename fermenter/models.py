@@ -1,5 +1,7 @@
 from django.db import models
 
+from port.models import Port
+
 class Fermenter(models.Model):
   MODES = (
     ('C', 'CHILL'),
@@ -12,6 +14,7 @@ class Fermenter(models.Model):
   hysteresis = models.DecimalField(max_digits=2, decimal_places=1, default=0.1)
   pumprun = models.IntegerField(default=5000)
   pumpdelay = models.IntegerField(default=60000)
+  port = models.ForeignKey(Port)
 
 class Temperature(models.Model):
   fermenter = models.ForeignKey(Fermenter, on_delete=models.CASCADE)

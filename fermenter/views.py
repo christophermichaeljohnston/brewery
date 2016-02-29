@@ -7,7 +7,7 @@ from django.utils import timezone
 from .models import Fermenter, Temperature
 from .forms import Form
 
-from serial_api.views import SerialAPI
+from port.views import PortAPI
 
 class ListView(generic.ListView):
   template_name = "fermenter/list.html"

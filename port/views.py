@@ -1,7 +1,7 @@
 import serial
 import time
 
-DEVICE_PATH = "/dev/ttyACM*"
+PORT_PATH = "/dev/ttyACM*"
 
 ports = {}
 
@@ -14,20 +14,19 @@ def initialize():
 def discover(request):
   initialize()
   import glob
-  for device in glob.glob(DEVICE_PATH):
-    open(device)
-    type = SerialAPI.cmd(device, "getType")
+  for port in glob.glob(PORT_PATH):
+    open(port)
+  time.sleep(3)
 
 def open(port):
   global ports
-  ports[port] = serial.Serial(port=port, baudrate=9600)
-  time.sleep(3)
+  ports[port] = serial.Serial(port=port, baudrate=9600, timeout=1.0, write_timeout=1.0)
 
 def close(port):
   global ports
   ports[port].close()
 
-class SerialAPI:
+class PortAPI:
 
   def cmd(port, cmd):
     global ports
