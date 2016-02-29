@@ -27,8 +27,8 @@
       <td>{{ fermenter.hysteresis }}</td>
       <td>{{ fermenter.pumprun }}</td>
       <td>{{ fermenter.pumpdelay }}</td>
-      <td><a href="{% url 'equipment:fermenter_edit' fermenter.id %}">Edit</a>|<a href="{% url 'equipment:fermenter_temperature' fermenter.id %}">Temperature</a>|<a href="{% url 'equipment:fermenter_chart' fermenter.id %}">Chart</a></td>
-      <td>{{ fermenter.fermentertemperature_set.all.last.value }} F at {{ fermenter.fermentertemperature_set.all.last.datetime }}</td>
+      <td><a href="{% url 'fermenter:edit' fermenter.id %}">Edit</a>|<a href="{% url 'fermenter:temperature' fermenter.id %}">Temperature</a>|<a href="{% url 'fermenter:chart' fermenter.id %}">Chart</a></td>
+      <td>{{ fermenter.temperature_set.all.last.temperature }} F at {{ fermenter.temperature_set.all.last.datetime }}</td>
     </tr>
   
 {% endif %}
