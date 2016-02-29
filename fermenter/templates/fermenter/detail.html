@@ -40,69 +40,36 @@
 
 <script>
 $(document).ready(function() {
-$.getJSON('{% url 'fermenter:chart' fermenter.id %}', function(data) {
-console.log(data);
-$(function () { 
-Highcharts.setOptions({
-  global: {
-    useUTC: true,
-  }
-});
-    $('#chart').highcharts({
+  $.getJSON('{% url 'fermenter:chart' fermenter.id %}', function(data) {
+    $(function () { 
+      Highcharts.setOptions({
+        global: {
+          useUTC: false,
+        }
+      });
+      $('#chart').highcharts({
         chart: {
-            type: 'line'
         },
-        title: {
-            text: 'Fermenter Temperature'
+        title: { text: 'Fermenter Temperature' },
+        xAxis: {
+          type: 'datetime',
+          title: { text: 'DateTime' }
         },
-xAxis: {
-type: 'datetime'
-},
-yAxis: {
-title: {
-text: 'Temperature'
-}
-},
+        yAxis: {
+          title: { text: 'Temperature' }
+        },
+        legend: {
+          enabled: false
+        },
         series: [{
-            data: data['data']
+          type: 'line',
+          name: 'Temperature',
+          data: data['data']
         }]
+      });
     });
-});
-});
+  });
 });
 </script>
-
-<script>
-$(document).ready(function() {
-$(function () { 
-Highcharts.setOptions({
-  global: {
-    useUTC: true,
-  }
-});
-    $('#chart').highcharts({
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: 'foo'
-        },
-xAxis: {
-type: 'datetime'
-},
-yAxis: {
-title: {
-text: 'Temperature'
-}
-},
-        series: [{
-            data: {{ data|safe }}
-        }]
-    });
-});
-});
-</script>
-
-
 
 {% endblock content %}
