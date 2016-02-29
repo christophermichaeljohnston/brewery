@@ -22,6 +22,12 @@ class DetailView(generic.DetailView):
 def discover(request):
   for port in Port.objects.filter(type='F'):
     print(port.sn)
+    try:
+      f = Fermenter.objects.get(sn=port.sn)
+    except Fermenter.DoesNotExist:
+      f = Fermenter(sn=port.sn)
+      print("not found")
+    f.sync()
   return redirect('fermenter:list')
 
 def edit(request, pk):
@@ -29,19 +35,19 @@ def edit(request, pk):
   if request.method == "POST":
     form = Form(request.POST)
     if form.is_valid():
-      if not f.sn == request.POST.get("sn"):
-        SerialAPI.cmd(f.dev,"setSN,"+request.POST.get("sn"))
+      if not f.tag == request.POST.get("tag"):
+        PortAPI.cmd(f.sn,"setTag,"+request.POST.get("tag"))
       if not f.mode == request.POST.get("mode"):
-        SerialAPI.cmd(f.dev,"setMode,"+request.POST.get("mode"))
+        PortAPI.cmd(f.sn,"setMode,"+request.POST.get("mode"))
       if not float(f.setpoint) == float(request.POST.get("setpoint")):
-        SerialAPI.cmd(f.dev,"setSetpoint,"+request.POST.get("setpoint"))
+        PortAPI.cmd(f.sn,"setSetpoint,"+request.POST.get("setpoint"))
       if not float(f.hysteresis) == float(request.POST.get("hysteresis")):
-        SerialAPI.cmd(f.dev,"setHysteresis,"+request.POST.get("hysteresis"))
+        PortAPI.cmd(f.sn,"setHysteresis,"+request.POST.get("hysteresis"))
       if not f.pumprun == int(request.POST.get("pumprun")):
-        SerialAPI.cmd(f.dev,"setPumpRun,"+request.POST.get("pumprun"))
+        PortAPI.cmd(f.sn,"setPumpRun,"+request.POST.get("pumprun"))
       if not f.pumpdelay == int(request.POST.get("pumpdelay")):
-        SerialAPI.cmd(f.dev,"setPumpDelay,"+request.POST.get("pumpdelay"))
-    fermenter_sync(f)
+        PortAPI.cmd(f.sn,"setPumpDelay,"+request.POST.get("pumpdelay"))
+    sync(f)
     return redirect('fermenter:detail', pk=f.id)
   else:
     form = Form(instance=f)
@@ -49,7 +55,7 @@ def edit(request, pk):
 
 def temperature(request, pk):
   f = Fermenter.objects.get(pk=pk)
-  t = SerialAPI.cmd(f.dev, "getTemperature")
+  t = PortAPI.cmd(f.sn, "getTemperature")
   dt = timezone.now()
   Temperature.objects.create(fermenter=f, temperature=t, datetime=dt)
   return redirect('fermenter:detail', pk=f.id)
@@ -61,23 +67,11 @@ def chart(request, pk):
     data.append([int(ft.datetime.strftime('%s'))*1000,float(ft.value)])
   return render(request, 'fermenter/chart.html', {'data': data})
 
-def fermenter_initialize():
-  Fermenter.objects.all().update(dev="")
-
-def fermenter_create_or_update(dev):
-  if type == "FERMENTER":
-    sn = SerialAPI.cmd(dev, "getSN")
-    try:
-      f = Fermenter.objects.get(sn=sn)
-    except Fermenter.DoesNotExist:
-      f = Fermenter(sn=sn)
-    f.dev = dev
-    fermenter_sync(f)
-
-def fermenter_sync(f):
-  f.mode = SerialAPI.cmd(f.dev, "getMode")
-  f.setpoint = SerialAPI.cmd(f.dev, "getSetpoint")
-  f.hysteresis = SerialAPI.cmd(f.dev, "getHysteresis")
-  f.pumprun = SerialAPI.cmd(f.dev, "getPumpRun")
-  f.pumpdelay = SerialAPI.cmd(f.dev, "getPumpDelay")
+def sync(f):
+  f.tag = PortAPI.cmd(f.sn, "getTag")
+  f.mode = PortAPI.cmd(f.sn, "getMode")
+  f.setpoint = PortAPI.cmd(f.sn, "getSetpoint")
+  f.hysteresis = PortAPI.cmd(f.sn, "getHysteresis")
+  f.pumprun = PortAPI.cmd(f.sn, "getPumpRun")
+  f.pumpdelay = PortAPI.cmd(f.sn, "getPumpDelay")
   f.save()

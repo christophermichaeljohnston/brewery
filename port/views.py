@@ -54,7 +54,7 @@ def cmd(port):
 
 class PortAPI:
 
-  def cmd(sn, type, cmd):
+  def cmd(sn, cmd):
     global ports
     port = Port.objects.get(sn=sn,type=type).port
     ports[port].reset_input_buffer()
