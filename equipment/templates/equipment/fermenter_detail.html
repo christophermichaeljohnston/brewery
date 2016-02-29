@@ -13,6 +13,7 @@
       <th class="col-xs-1">pumprun</th>
       <th class="col-xs-1">pumpdelay</th>
       <th class="col-xs-1">action</th>
+      <th class="col-xs-1">temp</th>
     </tr>
   </thead>
 {% if fermenter %}
@@ -26,9 +27,12 @@
       <td>{{ fermenter.hysteresis }}</td>
       <td>{{ fermenter.pumprun }}</td>
       <td>{{ fermenter.pumpdelay }}</td>
-      <td><a href="{% url 'equipment:fermenter_edit' fermenter.id %}">Edit</a> 
+      <td><a href="{% url 'equipment:fermenter_edit' fermenter.id %}">Edit</a>|<a href="{% url 'equipment:fermenter_temperature' fermenter.id %}">Temperature</a>|<a href="{% url 'equipment:fermenter_chart' fermenter.id %}">Chart</a></td>
+      <td>{{ fermenter.fermentertemperature_set.all.last.value }} F at {{ fermenter.fermentertemperature_set.all.last.datetime }}</td>
     </tr>
+  
 {% endif %}
   </tbody>
 </table>
+
 {% endblock content %}

@@ -13,6 +13,11 @@ class Fermenter(models.Model):
   pumprun = models.IntegerField(default=5000)
   pumpdelay = models.IntegerField(default=60000)
 
+class FermenterTemperature(models.Model):
+  fermenter = models.ForeignKey(Fermenter, on_delete=models.CASCADE)
+  value = models.DecimalField(max_digits=5, decimal_places=2)
+  datetime = models.DateTimeField()
+
 class Keezer(models.Model):
   sn  = models.CharField(max_length=16)
   dev = models.CharField(max_length=12)

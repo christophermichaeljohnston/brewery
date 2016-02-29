@@ -1,0 +1,36 @@
+{% extends "base/index.html" %}
+{% block content %}
+date: {{ foo|safe }}
+data: {{ data|safe }}
+<div id="chart" style="width:100%; height:400px;"></div>
+<script>
+$(document).ready(function() {
+$(function () { 
+Highcharts.setOptions({
+  global: {
+    useUTC: true,
+  }
+});
+    $('#chart').highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'foo'
+        },
+xAxis: {
+type: 'datetime'
+},
+yAxis: {
+title: {
+text: 'Temperature'
+}
+},
+        series: [{
+            data: {{ data|safe }}
+        }]
+    });
+});
+});
+</script>
+{% endblock content %}

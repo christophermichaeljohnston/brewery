@@ -2,16 +2,30 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views import generic
+from django.utils import timezone
 
-from .models import Fermenter, Keezer
+from .models import Fermenter, FermenterTemperature, Keezer
 from .forms import FermenterForm
 
-import time
 import serial
+import time
 
 DEVICE_PATH = "/dev/ttyACM*"
 
 serial_device = {}
+
+def init():
+  global serial_device
+  log = "Initializing existing equipment...\n"
+  serial_initialize()
+  fermenter_initialize()
+  log += "Discovering new and existing equipment...\n"
+  import glob
+  for dev in glob.glob(DEVICE_PATH):
+    log += "Found: " + dev + "\n"
+    serial_open(dev)
+    equipment_create_or_update(dev)
+  print(log)
 
 class FermentersView(generic.ListView):
   def get_queryset(self):
@@ -42,6 +56,23 @@ def fermenter_edit(request, pk):
   else:
     form = FermenterForm(instance=f)
     return render(request, 'equipment/fermenter_form.html', {'form': form})
+
+def fermenter_temperature(request, pk):
+  f = Fermenter.objects.get(pk=pk)
+  t = serial_cmd(f.dev, "getTemperature")
+  dt = timezone.now()
+  print(f.sn+" "+t)
+  FermenterTemperature.objects.create(fermenter=f, value=t, datetime=dt)
+  return redirect('equipment:fermenter', pk=f.id)
+
+def fermenter_chart(request, pk):
+  foo = []
+  data = []
+  f = Fermenter.objects.get(pk=pk)
+  for ft in f.fermentertemperature_set.all():
+    foo.append(ft.datetime)
+    data.append([int(ft.datetime.strftime('%s'))*1000,float(ft.value)])
+  return render(request, 'equipment/fermenter_chart.html', {'data': data, 'foo': foo})
 
 class KeezersView(generic.ListView):
   def get_queryset(self):
@@ -76,13 +107,11 @@ def serial_close(dev):
   serial_device[dev].close()
 
 def serial_cmd(dev, cmd):
-  print(cmd)
   global serial_device
   serial_device[dev].flushInput()
   serial_device[dev].flushOutput()
   serial_device[dev].write((cmd+"\n").encode())
   result = serial_device[dev].readline().decode().rstrip('\n').rstrip('\r')
-  print(result)
   return result
 
 def equipment_create_or_update(dev):
@@ -95,16 +124,13 @@ def fermenter_initialize():
 
 def fermenter_create_or_update(dev):
   sn = serial_cmd(dev, "getSN")
-  print(">"+sn+"<")
   try:
     f = Fermenter.objects.get(sn=sn)
-    print("found fermenter: >"+sn+"<")
   except Fermenter.DoesNotExist:
     f = Fermenter(sn=sn)
-    print("not found fermenter: >"+sn+"<")
   f.dev = dev
-  f.save()
   fermenter_sync(f)
+
 
 def fermenter_sync(f):
   f.mode = serial_cmd(f.dev, "getMode")
