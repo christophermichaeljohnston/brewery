@@ -35,4 +35,74 @@
   </tbody>
 </table>
 
+<div id="chart"></div>
+
+
+<script>
+$(document).ready(function() {
+$.getJSON('{% url 'fermenter:chart' fermenter.id %}', function(data) {
+console.log(data);
+$(function () { 
+Highcharts.setOptions({
+  global: {
+    useUTC: true,
+  }
+});
+    $('#chart').highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Fermenter Temperature'
+        },
+xAxis: {
+type: 'datetime'
+},
+yAxis: {
+title: {
+text: 'Temperature'
+}
+},
+        series: [{
+            data: data['data']
+        }]
+    });
+});
+});
+});
+</script>
+
+<script>
+$(document).ready(function() {
+$(function () { 
+Highcharts.setOptions({
+  global: {
+    useUTC: true,
+  }
+});
+    $('#chart').highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'foo'
+        },
+xAxis: {
+type: 'datetime'
+},
+yAxis: {
+title: {
+text: 'Temperature'
+}
+},
+        series: [{
+            data: {{ data|safe }}
+        }]
+    });
+});
+});
+</script>
+
+
+
 {% endblock content %}
