@@ -1,3 +1,4 @@
 from django.db import models
 
-# Create your models here.
+class Device(models.Model):
+  device = models.CharField(max_length=16)
