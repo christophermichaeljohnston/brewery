@@ -4,8 +4,8 @@ from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
 
-from .models import Fermenter, FermenterTemperature, Keezer
-from .forms import FermenterForm
+from .models import Fermenter, Temperature
+from .forms import Form
 
 import serial
 import time
@@ -14,27 +14,16 @@ DEVICE_PATH = "/dev/ttyACM*"
 
 serial_device = {}
 
-def init():
-  global serial_device
-  log = "Initializing existing equipment...\n"
-  serial_initialize()
-  fermenter_initialize()
-  log += "Discovering new and existing equipment...\n"
-  import glob
-  for dev in glob.glob(DEVICE_PATH):
-    log += "Found: " + dev + "\n"
-    serial_open(dev)
-    equipment_create_or_update(dev)
-  print(log)
-
-class FermentersView(generic.ListView):
+class ListView(generic.ListView):
+  template_name = "fermenter/list.html"
   def get_queryset(self):
     return Fermenter.objects.order_by('sn')
 
-class FermenterView(generic.DetailView):
+class DetailView(generic.DetailView):
+  templat_name = "fermenter/detail.html"
   model = Fermenter
 
-def fermenter_edit(request, pk):
+def edit(request, pk):
   f = Fermenter.objects.get(pk=pk)
   if request.method == "POST":
     form = FermenterForm(request.POST)
@@ -52,44 +41,41 @@ def fermenter_edit(request, pk):
       if not f.pumpdelay == int(request.POST.get("pumpdelay")):
         serial_cmd(f.dev,"setPumpDelay,"+request.POST.get("pumpdelay"))
     fermenter_sync(f)
-    return redirect('equipment:fermenter', pk=f.id)
+    return redirect('fermenter:detail', pk=f.id)
   else:
     form = FermenterForm(instance=f)
-    return render(request, 'equipment/fermenter_form.html', {'form': form})
+    return render(request, 'fermenter/form.html', {'form': form})
 
-def fermenter_temperature(request, pk):
+def temperature(request, pk):
   f = Fermenter.objects.get(pk=pk)
   t = serial_cmd(f.dev, "getTemperature")
   dt = timezone.now()
-  print(f.sn+" "+t)
-  FermenterTemperature.objects.create(fermenter=f, value=t, datetime=dt)
-  return redirect('equipment:fermenter', pk=f.id)
+  Temperature.objects.create(fermenter=f, temperature=t, datetime=dt)
+  return redirect('fermenter:detail', pk=f.id)
 
-def fermenter_chart(request, pk):
-  foo = []
+def chart(request, pk):
   data = []
   f = Fermenter.objects.get(pk=pk)
   for ft in f.fermentertemperature_set.all():
-    foo.append(ft.datetime)
     data.append([int(ft.datetime.strftime('%s'))*1000,float(ft.value)])
-  return render(request, 'equipment/fermenter_chart.html', {'data': data, 'foo': foo})
-
-class KeezersView(generic.ListView):
-  def get_queryset(self):
-    return Keezer.objects.order_by('sn')
+  return render(request, 'fermenter/chart.html', {'data': data})
 
 def discover(request):
   global serial_device
-  log = "Initializing existing equipment...\n"
+  log = "Initializing existing fermenters...\n"
   serial_initialize()
   fermenter_initialize()
-  log += "Discovering new and existing equipment...\n"
+  log += "Discovering new and existing fermenters...\n"
   import glob
   for dev in glob.glob(DEVICE_PATH):
     log += "Found: " + dev + "\n"
     serial_open(dev)
-    equipment_create_or_update(dev)
-  return render(request, 'equipment/discover.html', {'log': log})
+    type = serial_cmd(dev, "getType")
+    if type == "FERMENTER":
+      fermenter_create_or_update(dev)
+    else:
+      serial_close(dev)
+  return render(request, 'fermenter/discover.html', {'log': log})
 
 def serial_initialize():
   global serial_device
@@ -114,23 +100,18 @@ def serial_cmd(dev, cmd):
   result = serial_device[dev].readline().decode().rstrip('\n').rstrip('\r')
   return result
 
-def equipment_create_or_update(dev):
-  type = serial_cmd(dev, "getType")
-  if type == "FERMENTER":
-    fermenter_create_or_update(dev)
-
 def fermenter_initialize():
   Fermenter.objects.all().update(dev="")
 
 def fermenter_create_or_update(dev):
-  sn = serial_cmd(dev, "getSN")
-  try:
-    f = Fermenter.objects.get(sn=sn)
-  except Fermenter.DoesNotExist:
-    f = Fermenter(sn=sn)
-  f.dev = dev
-  fermenter_sync(f)
-
+  if type == "FERMENTER":
+    sn = serial_cmd(dev, "getSN")
+    try:
+      f = Fermenter.objects.get(sn=sn)
+    except Fermenter.DoesNotExist:
+      f = Fermenter(sn=sn)
+    f.dev = dev
+    fermenter_sync(f)
 
 def fermenter_sync(f):
   f.mode = serial_cmd(f.dev, "getMode")
