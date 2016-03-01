@@ -1,10 +1,15 @@
 {% extends "base/index.html" %}
 {% block content %}
-<h1>Fermenter</h1>
+<h1>Fermenter - {{ fermenter.tag }}</h1>
 <form method="post">
 {% csrf_token %}
 {{ form.as_p }}
-<button type="submit" class="save btn btn-default">Save</button>
-<a class="btn btn-default" href="{% url 'fermenter:detail' fermenter.id %}">Back</a>
+<div class="row">
+<div class="col-md-6">
+<button type="submit" class="save btn btn-default"><i class="fa fa-floppy-o"></i> Save</button>
+</div>
+<div class="col-md-6 text-right">
+<a class="btn btn-default" href="{% url 'fermenter:detail' fermenter.id %}"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
 </form>
 {% endblock content %}
