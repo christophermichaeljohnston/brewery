@@ -13,6 +13,7 @@ apt-get install python3 python3-pip
 pip3 install django
 pip3 install mysqlclient
 pip3 install pyserial
+pip3 install django-crispy-forms
 apt-get install apache2 libapache2-mod-wsgi-py3
 ```
 
