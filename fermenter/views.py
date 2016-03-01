@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
-from datetime import timedelta
+from datetime import datetime, timedelta
 import json
 
 from .models import Fermenter, Temperature
@@ -73,36 +73,22 @@ def chart(request, pk):
   return render(request, 'fermenter/chart.html', {'fermenter': fermenter})
 
 def chart_data(request, pk):
+  now = timezone.now()
   period = request.GET.get('period')
   if period == "hour":
-    threshold = timezone.now() - timedelta(hours=1)
-  elif period == "day":
-    threshold = timezone.now() - timedelta(days=1)
+    threshold = now - timedelta(hours=1)
+    format = '%%Y-%%m-%%d %%H:%%i:00'
+  elif period == "day" or period == None:
+    threshold = now - timedelta(days=1)
+    format = '%%Y-%%m-%%d %%H:%%i:00'
   elif period == "week":
-    threshold = timezone.now() - timedelta(weeks=1)
-  elif period == "month":
-    threshold = timezone.now() - timedelta(months=1)
-  else:
-    threshold = timezone.now() - timedelta(days=1)
-
+    threshold = now - timedelta(weeks=1)
+    format = '%%Y-%%m-%%d %%H:%%i:00'
+  sql = "select id, date_format(datetime, '"+format+"') as nested, avg(temperature) as temperature from fermenter_temperature where fermenter_id = '"+pk+"' and datetime >= '"+threshold.strftime('%Y-%m-%d %H:%M:%S')+"' group by date_format(datetime, '"+format+"')"
   response = {}
-  response['period'] = [period]
-  response['threshold'] = [str(threshold)]
+  response['start'] = [int(threshold.strftime('%s'))*1000]
+  response['end'] = [int(now.strftime('%s'))*1000]
   response['data'] = []
-
-  f = Fermenter.objects.get(pk=pk)
-
-  sql = "select id, date_format(datetime, '%Y-%m-%d %H:%i:00') as datetime, avg(temperature) as temperature from fermenter_temperature where fermenter_id = '1' and datetime >= '2016-02-29 19:00:04.929445+00:00' group by date_format(datetime, '%Y-%m-%d %H:%i:00');"
-
-  from django.db.models import Avg
-  queryset = f.temperature_set.all()
-  print(queryset.query)
-
-
-  for t in f.temperature_set.filter(datetime__gte=threshold):
-    response['data'].append([int(t.datetime.strftime('%s'))*1000,float(t.temperature)])
+  for t in Temperature.objects.raw(sql):
+    response['data'].append([int(datetime.strptime(t.nested, '%Y-%m-%d %H:%M:%S').strftime('%s'))*1000,float(t.temperature)])
   return HttpResponse(json.dumps(response), content_type="application/json")
-
-
-
-
