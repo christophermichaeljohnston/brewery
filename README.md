@@ -41,12 +41,6 @@ Require all granted
 </Directory>
 ```
 
-## deployment
-
-```
-python3 manage.py migrate
-```
-
 ## cron
 
 Automatically capture fermenter temperatures every minute.
