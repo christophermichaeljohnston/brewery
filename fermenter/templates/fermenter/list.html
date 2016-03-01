@@ -1,25 +1,38 @@
 {% extends "base/index.html" %}
 {% block content %}
 <h1>Fermenters</h1>
-<table class="table">
-  <thead>
-    <tr>
-      <th class="col-xs-1">id</th>
-      <th class="col-xs-1">sn</th>
-      <th class="col-xs-1">tag</th>
-      <th class="col-xs-9"></th>
-    </tr>
-  </thead>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="col-xs-1">sn</th>
+        <th class="col-xs-1">tag</th>
+        <th class="col-xs-1">mode</th>
+        <th class="col-xs-1">setpoint</th>
+        <th class="col-xs-1">hysteresis</th>
+        <th class="col-xs-1">pumprun</th>
+        <th class="col-xs-1">pumpdelay</th>
+        <th class="col-xs-1">temperature</th>
+        <th class="col-xs-4">action</th>
+      </tr>
+    </thead>
 {% if fermenter_list %}
-  <tbody>
+    <tbody>
 {% for fermenter in fermenter_list %}
-    <tr>
-      <td>{{ fermenter.id }}</td>
-      <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.sn }}</a></td>
-      <td>{{ fermenter.tag }}</td>
-    </tr>
+      <tr>
+        <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.sn }}</a></td>
+        <td>{{ fermenter.tag }}</td>
+        <td>{{ fermenter.get_mode_display }}</td>
+        <td>{{ fermenter.setpoint }}</td>
+        <td>{{ fermenter.hysteresis }}</td>
+        <td>{{ fermenter.pumprun }}</td>
+        <td>{{ fermenter.pumpdelay }}</td>
+        <td></td>
+        <td><a class="btn btn-default btn-xs" href="{% url 'fermenter:edit' fermenter.id %}"><i class="fa fa-pencil-square-o"></i> Edit</a> <a class="btn btn-default btn-xs"href="{% url 'fermenter:chart' fermenter.id %}"><i class="fa fa-line-chart"></i> Chart</a></div></td>
+      </tr>
 {% endfor %}
 {% endif %}
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</div>
 {% endblock content %}

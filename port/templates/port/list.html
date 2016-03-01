@@ -18,7 +18,7 @@
       <td>{{ port.id }}</td>
       <td><a href="{% url 'port:detail' port.id %}">{{ port.port }}</td>
       <td>{{ port.sn }}</td>
-      <td>{{ port.type }}</td>
+      <td>{{ port.get_type_display }}</td>
     </tr>
 {% endfor %}
 {% endif %}
