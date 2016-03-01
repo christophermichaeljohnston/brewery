@@ -46,3 +46,10 @@ Require all granted
 ```
 python3 manage.py migrate
 ```
+
+## cron
+
+Automatically capture fermenter temperatures every minute.
+```
+* * * * * curl http://localhost/fermenter/temperatures/ 2>/dev/null 1>&1
+```
