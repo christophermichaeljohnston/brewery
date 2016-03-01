@@ -2,6 +2,8 @@
 
 Arduino and Raspberry PI powered brewery.
 
+Manage connected brewery devices (fermenter only at this time) and provides graphs of collected temperatures.
+
 ## dependencies
 
 ### packages
