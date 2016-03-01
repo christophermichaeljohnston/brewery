@@ -78,11 +78,14 @@ def chart_data(request, pk):
   if period == "hour":
     threshold = now - timedelta(hours=1)
     format = '%%Y-%%m-%%d %%H:%%i:00'
-  elif period == "day" or period == None:
+  elif period == "day"
     threshold = now - timedelta(days=1)
     format = '%%Y-%%m-%%d %%H:%%i:00'
   elif period == "week":
     threshold = now - timedelta(weeks=1)
+    format = '%%Y-%%m-%%d %%H:%%i:00'
+  else:
+    threshold = now - timedelta(days=1)
     format = '%%Y-%%m-%%d %%H:%%i:00'
   sql = "select id, date_format(datetime, '"+format+"') as nested, avg(temperature) as temperature from fermenter_temperature where fermenter_id = '"+pk+"' and datetime >= '"+threshold.strftime('%Y-%m-%d %H:%M:%S')+"' group by date_format(datetime, '"+format+"')"
   response = {}
