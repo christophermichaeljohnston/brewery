@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
+from datetime import timedelta
 import json
 
 from .models import Fermenter, Temperature
@@ -72,9 +73,36 @@ def chart(request, pk):
   return render(request, 'fermenter/chart.html', {'fermenter': fermenter})
 
 def chart_data(request, pk):
+  period = request.GET.get('period')
+  if period == "hour":
+    threshold = timezone.now() - timedelta(hours=1)
+  elif period == "day":
+    threshold = timezone.now() - timedelta(days=1)
+  elif period == "week":
+    threshold = timezone.now() - timedelta(weeks=1)
+  elif period == "month":
+    threshold = timezone.now() - timedelta(months=1)
+  else:
+    threshold = timezone.now() - timedelta(days=1)
+
   response = {}
+  response['period'] = [period]
+  response['threshold'] = [str(threshold)]
   response['data'] = []
+
   f = Fermenter.objects.get(pk=pk)
-  for t in f.temperature_set.all():
+
+  sql = "select id, date_format(datetime, '%Y-%m-%d %H:%i:00') as datetime, avg(temperature) as temperature from fermenter_temperature where fermenter_id = '1' and datetime >= '2016-02-29 19:00:04.929445+00:00' group by date_format(datetime, '%Y-%m-%d %H:%i:00');"
+
+  from django.db.models import Avg
+  queryset = f.temperature_set.all()
+  print(queryset.query)
+
+
+  for t in f.temperature_set.filter(datetime__gte=threshold):
     response['data'].append([int(t.datetime.strftime('%s'))*1000,float(t.temperature)])
   return HttpResponse(json.dumps(response), content_type="application/json")
+
+
+
+
