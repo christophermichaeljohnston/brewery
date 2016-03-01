@@ -12,8 +12,7 @@
       <th class="col-xs-1">hysteresis</th>
       <th class="col-xs-1">pumprun</th>
       <th class="col-xs-1">pumpdelay</th>
-      <th class="col-xs-1">action</th>
-      <th class="col-xs-1">temp</th>
+      <th class="col-xs-4">action</th>
     </tr>
   </thead>
 {% if fermenter %}
@@ -27,49 +26,10 @@
       <td>{{ fermenter.hysteresis }}</td>
       <td>{{ fermenter.pumprun }}</td>
       <td>{{ fermenter.pumpdelay }}</td>
-      <td><a href="{% url 'fermenter:edit' fermenter.id %}">Edit</a>|<a href="{% url 'fermenter:temperature' fermenter.id %}">Temperature</a>|<a href="{% url 'fermenter:chart' fermenter.id %}">Chart</a></td>
-      <td>{{ fermenter.temperature_set.all.last.temperature }} F at {{ fermenter.temperature_set.all.last.datetime }}</td>
+      <td><a class="btn btn-default" href="{% url 'fermenter:edit' fermenter.id %}">Edit</a><a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}">Chart</a></td>
     </tr>
   
 {% endif %}
   </tbody>
 </table>
-
-<div id="chart"></div>
-
-
-<script>
-$(document).ready(function() {
-  $.getJSON('{% url 'fermenter:chart' fermenter.id %}', function(data) {
-    $(function () { 
-      Highcharts.setOptions({
-        global: {
-          useUTC: false,
-        }
-      });
-      $('#chart').highcharts({
-        chart: {
-        },
-        title: { text: 'Fermenter Temperature' },
-        xAxis: {
-          type: 'datetime',
-          title: { text: 'DateTime' }
-        },
-        yAxis: {
-          title: { text: 'Temperature' }
-        },
-        legend: {
-          enabled: false
-        },
-        series: [{
-          type: 'line',
-          name: 'Temperature',
-          data: data['data']
-        }]
-      });
-    });
-  });
-});
-</script>
-
 {% endblock content %}

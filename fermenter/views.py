@@ -22,13 +22,10 @@ class DetailView(generic.DetailView):
 
 def discover(request):
   for port in Port.objects.filter(type='F'):
-    print(port.sn)
     try:
       f = Fermenter.objects.get(sn=port.sn)
     except Fermenter.DoesNotExist:
       f = Fermenter(sn=port.sn)
-      print("not found")
-    f.sync()
   return redirect('fermenter:list')
 
 def edit(request, pk):
@@ -52,22 +49,7 @@ def edit(request, pk):
     return redirect('fermenter:detail', pk=f.id)
   else:
     form = Form(instance=f)
-    return render(request, 'fermenter/form.html', {'form': form})
-
-def temperature(request, pk):
-  f = Fermenter.objects.get(pk=pk)
-  t = PortAPI.cmd(f.sn, "getTemperature")
-  dt = timezone.now()
-  Temperature.objects.create(fermenter=f, temperature=t, datetime=dt)
-  return redirect('fermenter:detail', pk=f.id)
-
-def chart(request, pk):
-  response = {}
-  response['data'] = []
-  f = Fermenter.objects.get(pk=pk)
-  for t in f.temperature_set.all():
-    response['data'].append([int(t.datetime.strftime('%s'))*1000,float(t.temperature)])
-  return HttpResponse(json.dumps(response), content_type="application/json")
+    return render(request, 'fermenter/form.html', {'form': form, 'fermenter': f})
 
 def sync(f):
   f.tag = PortAPI.cmd(f.sn, "getTag")
@@ -77,3 +59,22 @@ def sync(f):
   f.pumprun = PortAPI.cmd(f.sn, "getPumpRun")
   f.pumpdelay = PortAPI.cmd(f.sn, "getPumpDelay")
   f.save()
+
+def temperatures(request):
+  for f in Fermenter.objects.all():
+    t = PortAPI.cmd(f.sn, "getTemperature")
+    dt = timezone.now()
+    Temperature.objects.create(fermenter=f, temperature=t, datetime=dt)
+  return HttpResponse("saved new temperatures")
+
+def chart(request, pk):
+  fermenter = Fermenter.objects.get(pk=pk)
+  return render(request, 'fermenter/chart.html', {'fermenter': fermenter})
+
+def chart_data(request, pk):
+  response = {}
+  response['data'] = []
+  f = Fermenter.objects.get(pk=pk)
+  for t in f.temperature_set.all():
+    response['data'].append([int(t.datetime.strftime('%s'))*1000,float(t.temperature)])
+  return HttpResponse(json.dumps(response), content_type="application/json")

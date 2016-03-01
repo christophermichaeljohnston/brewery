@@ -5,6 +5,6 @@
 {% csrf_token %}
 {{ form.as_p }}
 <button type="submit" class="save btn btn-default">Save</button>
+<a class="btn btn-default" href="{% url 'fermenter:detail' fermenter.id %}">Back</a>
 </form>
 {% endblock content %}
-

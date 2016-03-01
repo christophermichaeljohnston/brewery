@@ -15,8 +15,8 @@
 {% for fermenter in fermenter_list %}
     <tr>
       <td>{{ fermenter.id }}</td>
-      <td>{{ fermenter.sn }}</td>
-      <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.tag }}</a></td>
+      <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.sn }}</a></td>
+      <td>{{ fermenter.tag }}</td>
     </tr>
 {% endfor %}
 {% endif %}

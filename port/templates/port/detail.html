@@ -1,0 +1,24 @@
+{% extends "base/index.html" %}
+{% block content %}
+<h1>Port</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th class="col-xs-1">id</th>
+      <th class="col-xs-1">port</th>
+      <th class="col-xs-1">sn</th>
+      <th class="col-xs-1">type</th>
+    </tr>
+  </thead>
+{% if port %}
+  <tbody>
+    <tr>
+      <td>{{ port.id }}</td>
+      <td>{{ port.port }}</td>
+      <td>{{ port.sn }}</td>
+      <td>{{ port.type }}</td>
+    </tr>
+{% endif %}
+  </tbody>
+</table>
+{% endblock content %}

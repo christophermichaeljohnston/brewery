@@ -1,35 +1,46 @@
 {% extends "base/index.html" %}
 {% block content %}
-data: {{ data|safe }}
-<div id="chart" style="width:100%; height:400px;"></div>
+<div id="chart"></div>
 <script>
 $(document).ready(function() {
-$(function () { 
-Highcharts.setOptions({
-  global: {
-    useUTC: true,
-  }
-});
-    $('#chart').highcharts({
-        chart: {
-            type: 'line'
+  $.getJSON('{% url 'fermenter:chart_data' fermenter.id %}', function(data) {
+    $(function () { 
+      Highcharts.setOptions({
+        global: {
+          useUTC: false,
+        }
+      });
+      $('#chart').highcharts({
+        credits: {
+          enabled: false
         },
         title: {
-            text: 'foo'
+          text: 'Fermenter Temperature - {{ fermenter.tag }}'
         },
-xAxis: {
-type: 'datetime'
-},
-yAxis: {
-title: {
-text: 'Temperature'
-}
-},
+        xAxis: {
+          type: 'datetime',
+        },
+        yAxis: {
+          title: { text: '' },
+          startOnTick: false,
+          endOnTick: false,
+          minPadding: 0.1,
+          maxPadding: 0.1
+        },
+        legend: {
+          enabled: false
+        },
         series: [{
-            data: {{ data|safe }}
+          type: 'spline',
+          data: data['data']
         }]
+      });
     });
-});
+  });
 });
 </script>
+<p class="text-center">
+<a class="btn btn-default" href="{% url 'fermenter:detail' fermenter.id %}" role="button">Back</a>
+<a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}" role="button">Refresh</a>
+</p>
 {% endblock content %}
