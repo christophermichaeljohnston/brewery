@@ -1,32 +1,34 @@
 {% extends "base/index.html" %}
 {% block content %}
 <h1>Fermenter - {{ fermenter.tag }}</h1>
-<table class="table">
-  <thead>
-    <tr>
-      <th class="col-xs-1">sn</th>
-      <th class="col-xs-1">tag</th>
-      <th class="col-xs-1">mode</th>
-      <th class="col-xs-1">setpoint</th>
-      <th class="col-xs-1">hysteresis</th>
-      <th class="col-xs-1">pumprun</th>
-      <th class="col-xs-1">pumpdelay</th>
-      <th class="col-xs-5">temperature</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{ fermenter.sn }}</td>
-      <td>{{ fermenter.tag }}</td>
-      <td>{{ fermenter.get_mode_display }}</td>
-      <td>{{ fermenter.setpoint }}</td>
-      <td>{{ fermenter.hysteresis }}</td>
-      <td>{{ fermenter.pumprun }}</td>
-      <td>{{ fermenter.pumpdelay }}</td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="col-xs-1">sn</th>
+        <th class="col-xs-1">tag</th>
+        <th class="col-xs-1">mode</th>
+        <th class="col-xs-1">setpoint</th>
+        <th class="col-xs-1">hysteresis</th>
+        <th class="col-xs-1">pumprun</th>
+        <th class="col-xs-1">pumpdelay</th>
+        <th class="col-xs-5">temperature</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ fermenter.sn }}</td>
+        <td>{{ fermenter.tag }}</td>
+        <td>{{ fermenter.get_mode_display }}</td>
+        <td>{{ fermenter.setpoint }}</td>
+        <td>{{ fermenter.hysteresis }}</td>
+        <td>{{ fermenter.pumprun }}</td>
+        <td>{{ fermenter.pumpdelay }}</td>
+        <td>{{ fermenter.temperature_set.last.temperature }} F <small><small>({{ fermenter.temperature_set.last.datetime|timesince }} ago)</small></small></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <div class="row">
 <div class="col-md-6">
 <a class="btn btn-default" href="{% url 'fermenter:edit' fermenter.id %}"><i class="fa fa-pencil-square-o"></i> Edit</a>

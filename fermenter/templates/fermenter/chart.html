@@ -3,12 +3,12 @@
 <h1>Fermenter - {{ fermenter.tag }}</h1>
 <div id="chart" style="min-width: 310px; height: 300px; margin: 0 auto"></div>
 <div class="row">
-<div class="col-md-6">
-<a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}" role="button"><i class="fa fa-refresh"></i> Refresh</a>
-</div>
-<div class="col-md-6 text-right">
-<a class="btn btn-default" href="{% url 'fermenter:detail' fermenter.id %}" role="button"><i class="fa fa-arrow-left"></i> Back</a>
-</div>
+  <div class="col-md-6">
+    <a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}" role="button"><i class="fa fa-refresh"></i> Refresh</a>
+  </div>
+  <div class="col-md-6 text-right">
+    <a class="btn btn-default" href="{% url 'fermenter:detail' fermenter.id %}" role="button"><i class="fa fa-arrow-left"></i> Back</a>
+  </div>
 </div>
 <script>
 $(document).ready(function() {

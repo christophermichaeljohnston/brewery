@@ -26,7 +26,7 @@
         <td>{{ fermenter.hysteresis }}</td>
         <td>{{ fermenter.pumprun }}</td>
         <td>{{ fermenter.pumpdelay }}</td>
-        <td></td>
+        <td>{{ fermenter.temperature_set.last.temperature }} F <small><small>({{ fermenter.temperature_set.last.datetime|timesince }} ago)</small></small></td>
       </tr>
 {% endfor %}
 {% endif %}
