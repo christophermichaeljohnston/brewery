@@ -12,8 +12,7 @@
         <th class="col-xs-1">hysteresis</th>
         <th class="col-xs-1">pumprun</th>
         <th class="col-xs-1">pumpdelay</th>
-        <th class="col-xs-1">temperature</th>
-        <th class="col-xs-4">action</th>
+        <th class="col-xs-5">temperature</th>
       </tr>
     </thead>
 {% if fermenter_list %}
@@ -28,7 +27,6 @@
         <td>{{ fermenter.pumprun }}</td>
         <td>{{ fermenter.pumpdelay }}</td>
         <td></td>
-        <td><a class="btn btn-default btn-xs" href="{% url 'fermenter:edit' fermenter.id %}"><i class="fa fa-pencil-square-o"></i> Edit</a> <a class="btn btn-default btn-xs"href="{% url 'fermenter:chart' fermenter.id %}"><i class="fa fa-line-chart"></i> Chart</a></div></td>
       </tr>
 {% endfor %}
 {% endif %}

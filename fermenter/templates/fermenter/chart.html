@@ -1,6 +1,15 @@
 {% extends "base/index.html" %}
 {% block content %}
-<div id="chart"></div>
+<h1>Fermenter - {{ fermenter.tag }}</h1>
+<div id="chart" style="min-width: 310px; height: 300px; margin: 0 auto"></div>
+<div class="row">
+<div class="col-md-6">
+<a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}" role="button"><i class="fa fa-refresh"></i> Refresh</a>
+</div>
+<div class="col-md-6 text-right">
+<a class="btn btn-default" href="{% url 'fermenter:detail' fermenter.id %}" role="button"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+</div>
 <script>
 $(document).ready(function() {
   $.getJSON('{% url 'fermenter:chart_data' fermenter.id %}', function(data) {
@@ -15,7 +24,7 @@ $(document).ready(function() {
           enabled: false
         },
         title: {
-          text: 'Fermenter Temperature - {{ fermenter.tag }}'
+          text: ''
         },
         xAxis: {
           type: 'datetime',
@@ -39,8 +48,4 @@ $(document).ready(function() {
   });
 });
 </script>
-<p class="text-center">
-<a class="btn btn-default" href="{% url 'fermenter:detail' fermenter.id %}" role="button">Back</a>
-<a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}" role="button">Refresh</a>
-</p>
 {% endblock content %}

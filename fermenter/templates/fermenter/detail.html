@@ -1,10 +1,9 @@
 {% extends "base/index.html" %}
 {% block content %}
-<h1>Fermenter</h1>
+<h1>Fermenter - {{ fermenter.tag }}</h1>
 <table class="table">
   <thead>
     <tr>
-      <th class="col-xs-1">id</th>
       <th class="col-xs-1">sn</th>
       <th class="col-xs-1">tag</th>
       <th class="col-xs-1">mode</th>
@@ -12,13 +11,11 @@
       <th class="col-xs-1">hysteresis</th>
       <th class="col-xs-1">pumprun</th>
       <th class="col-xs-1">pumpdelay</th>
-      <th class="col-xs-4">action</th>
+      <th class="col-xs-5">temperature</th>
     </tr>
   </thead>
-{% if fermenter %}
   <tbody>
     <tr>
-      <td>{{ fermenter.id }}</td>
       <td>{{ fermenter.sn }}</td>
       <td>{{ fermenter.tag }}</td>
       <td>{{ fermenter.get_mode_display }}</td>
@@ -26,10 +23,17 @@
       <td>{{ fermenter.hysteresis }}</td>
       <td>{{ fermenter.pumprun }}</td>
       <td>{{ fermenter.pumpdelay }}</td>
-      <td><a class="btn btn-default" href="{% url 'fermenter:edit' fermenter.id %}">Edit</a><a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}">Chart</a></td>
+      <td></td>
     </tr>
-  
-{% endif %}
   </tbody>
 </table>
+<div class="row">
+<div class="col-md-6">
+<a class="btn btn-default" href="{% url 'fermenter:edit' fermenter.id %}"><i class="fa fa-pencil-square-o"></i> Edit</a>
+<a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}"><i class="fa fa-line-chart"></i> Chart</a>
+</div>
+<div class="col-md-6 text-right">
+<a class="btn btn-default" href="{% url 'fermenter:list' %}"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+</div>
 {% endblock content %}
