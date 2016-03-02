@@ -23,19 +23,21 @@ class DetailView(generic.DetailView):
   model = Fermenter
 
 def discover(request):
-  for port in Port.objects.filter(type='F'):
-    try:
-      f = Fermenter.objects.get(sn=port.sn)
-    except Fermenter.DoesNotExist:
-      f = Fermenter(sn=port.sn)
-  return redirect('fermenter:list')
-
-def edit(request, pk):
+  messages.info(request, "Discovering...")
   messages.debug(request,"hello debug")
   messages.info(request,"hello info")
   messages.success(request,"hello success")
   messages.warning(request,"hello warning")
   messages.error(request,"hello error")
+  for port in Port.objects.filter(type='F'):
+    try:
+      f = Fermenter.objects.get(sn=port.sn)
+    except Fermenter.DoesNotExist:
+      f = Fermenter(sn=port.sn)
+    sync(f)
+  return redirect('fermenter:list')
+
+def edit(request, pk):
   f = Fermenter.objects.get(pk=pk)
   if request.method == "POST":
     form = Form(request.POST)
