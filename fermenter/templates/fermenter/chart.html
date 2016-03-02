@@ -4,15 +4,17 @@
 <div id="chart" style="min-width: 310px; height: 300px; margin: 0 auto"></div>
 <div class="row">
   <div class="col-md-6">
-    <a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}" role="button"><i class="fa fa-refresh"></i> Refresh</a>
+    <a class="btn btn-default" href="javascript:drawChart('hour');" role="button">Hour</a>
+    <a class="btn btn-default" href="javascript:drawChart('day');" role="button">Day</a>
+    <a class="btn btn-default" href="javascript:drawChart('week');" role="button">Week</a>
   </div>
   <div class="col-md-6 text-right">
     <a class="btn btn-default" href="{% url 'fermenter:detail' fermenter.id %}" role="button"><i class="fa fa-arrow-left"></i> Back</a>
   </div>
 </div>
 <script>
-$(document).ready(function() {
-  $.getJSON('{% url 'fermenter:chart_data' fermenter.id %}', function(data) {
+function drawChart(period) {
+  $.getJSON('{% url 'fermenter:chart_data' fermenter.id %}?period='+period, function(data) {
     $(function () { 
       Highcharts.setOptions({
         global: {
@@ -20,6 +22,8 @@ $(document).ready(function() {
         }
       });
       $('#chart').highcharts({
+        plotOptions: {
+        },
         chart: {
           zoomType: 'x'
         },
@@ -43,12 +47,15 @@ $(document).ready(function() {
           enabled: false
         },
         series: [{
-          type: 'spline',
+          type: 'line',
           data: data['data']
         }]
       });
     });
   });
+}
+$(document).ready(function() {
+  drawChart("day");
 });
 </script>
 {% endblock content %}
