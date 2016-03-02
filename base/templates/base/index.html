@@ -27,22 +27,8 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Ports<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="{% url 'port:discover' %}">Discover</a></li>
-                <li><a href="{% url 'port:list' %}">List</a></li>
-              </ul>
-            </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Fermenters<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="{% url 'fermenter:discover' %}">Discover</a></li>
-                <li><a href="{% url 'fermenter:list' %}">List</a></li>
-              </ul>
-            </li>
+            <li><a href="{% url 'fermenter:list' %}">Fermenters</a></li>
+            <li><a href="{% url 'port:list' %}">Ports</a></li>
           </ul>
         </div>
       </div>

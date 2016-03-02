@@ -8,6 +8,7 @@
       <th class="col-xs-1">port</th>
       <th class="col-xs-1">sn</th>
       <th class="col-xs-1">type</th>
+      <th class="col-xs-8"></th>
     </tr>
   </thead>
 {% if port %}
@@ -21,4 +22,11 @@
 {% endif %}
   </tbody>
 </table>
+<div class="row">
+<div class="col-md-6">
+</div>
+<div class="col-md-6 text-right">
+<a class="btn btn-default" href="{% url 'port:list' %}"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+</div>
 {% endblock content %}
