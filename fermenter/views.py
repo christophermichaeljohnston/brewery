@@ -31,11 +31,11 @@ def discover(request):
   return redirect('fermenter:list')
 
 def edit(request, pk):
-  messages.info(request,"hello debug")
+  messages.debug(request,"hello debug")
   messages.info(request,"hello info")
-  messages.info(request,"hello success")
-  messages.info(request,"hello warning")
-  messages.info(request,"hello error")
+  messages.success(request,"hello success")
+  messages.warning(request,"hello warning")
+  messages.error(request,"hello error")
   f = Fermenter.objects.get(pk=pk)
   if request.method == "POST":
     form = Form(request.POST)

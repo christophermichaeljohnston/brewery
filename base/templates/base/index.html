@@ -35,11 +35,11 @@
     </nav>
     <div class="container">
       {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
+          <ul class=list-group>
+          {% for message in messages %}
+            <li class="list-group-item{% if message.tags %} {{ message.tags }} {% endif %}">{{ message }}</li>
+          {% endfor %}
+          </ul>
       {% endif %}
       {% block content %}
       <div class="jumbotron">
