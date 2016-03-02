@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
+from django.contrib import messages
 from datetime import datetime, timedelta
 import json
 
@@ -30,6 +31,11 @@ def discover(request):
   return redirect('fermenter:list')
 
 def edit(request, pk):
+  messages.info(request,"hello debug")
+  messages.info(request,"hello info")
+  messages.info(request,"hello success")
+  messages.info(request,"hello warning")
+  messages.info(request,"hello error")
   f = Fermenter.objects.get(pk=pk)
   if request.method == "POST":
     form = Form(request.POST)
