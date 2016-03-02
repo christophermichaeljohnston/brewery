@@ -4,18 +4,16 @@
 <table class="table">
   <thead>
     <tr>
-      <th class="col-xs-1">id</th>
       <th class="col-xs-1">port</th>
       <th class="col-xs-1">sn</th>
       <th class="col-xs-1">type</th>
-      <th class="col-xs-8"></th>
+      <th class="col-xs-9"></th>
     </tr>
   </thead>
 {% if port_list %}
   <tbody>
 {% for port in port_list %}
     <tr>
-      <td>{{ port.id }}</td>
       <td><a href="{% url 'port:detail' port.id %}">{{ port.port }}</td>
       <td>{{ port.sn }}</td>
       <td>{{ port.get_type_display }}</td>
