@@ -86,15 +86,15 @@ def chart_data(request, pk):
   if period == "hour":
     threshold = now - timedelta(hours=1)
     format = '%%Y-%%m-%%d %%H:%%i:00'
-    div = 60*3
+    div = 60
   elif period == "day":
     threshold = now - timedelta(days=1)
     format = '%%Y-%%m-%%d %%H:%%i:00'
-    div = 60*10
+    div = 60*5
   elif period == "week":
     threshold = now - timedelta(weeks=1)
-    format = '%%Y-%%m-%%d %%H:00:00'
-    div = 60*60*2
+    format = '%%Y-%%m-%%d %%H:%%i:00'
+    div = 60*30
   else:
     threshold = now - timedelta(days=1)
     format = '%%Y-%%m-%%d %%H:%%i:00'
