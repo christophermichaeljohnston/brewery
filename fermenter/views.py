@@ -86,20 +86,23 @@ def chart_data(request, pk):
   if period == "hour":
     threshold = now - timedelta(hours=1)
     format = '%%Y-%%m-%%d %%H:%%i:00'
+    div = 60*3
   elif period == "day":
     threshold = now - timedelta(days=1)
     format = '%%Y-%%m-%%d %%H:%%i:00'
+    div = 60*10
   elif period == "week":
     threshold = now - timedelta(weeks=1)
-    format = '%%Y-%%m-%%d %%H:%%i:00'
+    format = '%%Y-%%m-%%d %%H:00:00'
+    div = 60*60*2
   else:
     threshold = now - timedelta(days=1)
     format = '%%Y-%%m-%%d %%H:%%i:00'
-  sql = "select id, date_format(datetime, '"+format+"') as nested, avg(temperature) as temperature from fermenter_temperature where fermenter_id = '"+pk+"' and datetime >= '"+threshold.strftime('%Y-%m-%d %H:%M:%S')+"' group by date_format(datetime, '"+format+"') order by datetime"
+  sql = "select id, date_format(datetime, '"+format+"') as nested, avg(temperature) as temperature from fermenter_temperature where fermenter_id = '"+pk+"' and datetime >= '"+threshold.strftime('%Y-%m-%d %H:%M:%S')+"' group by unix_timestamp(date_format(datetime, '"+format+"')) div "+str(div)+" order by datetime"
   response = {}
   response['start'] = [int(threshold.strftime('%s'))*1000]
   response['end'] = [int(now.strftime('%s'))*1000]
   response['data'] = []
   for t in Temperature.objects.raw(sql):
-    response['data'].append([int(datetime.strptime(t.nested, '%Y-%m-%d %H:%M:%S').strftime('%s'))*1000,float(t.temperature)])
+    response['data'].append([int(datetime.strptime(t.nested, '%Y-%m-%d %H:%M:%S').strftime('%s'))*1000,round(float(t.temperature),2)])
   return HttpResponse(json.dumps(response), content_type="application/json")

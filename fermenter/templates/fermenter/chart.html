@@ -23,6 +23,11 @@ function drawChart(period) {
       });
       $('#chart').highcharts({
         plotOptions: {
+          series: {
+            marker: {
+              enabled: false
+            }
+          }
         },
         chart: {
           zoomType: 'x'
@@ -37,7 +42,7 @@ function drawChart(period) {
           type: 'datetime',
         },
         yAxis: {
-          title: { text: '' },
+          title: { text: 'Farenheit' },
           startOnTick: false,
           endOnTick: false,
           minPadding: 0.1,
@@ -47,7 +52,8 @@ function drawChart(period) {
           enabled: false
         },
         series: [{
-          type: 'line',
+          type: 'spline',
+          name: 'Temperature',
           data: data['data']
         }]
       });
