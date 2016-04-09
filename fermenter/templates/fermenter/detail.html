@@ -1,12 +1,13 @@
 {% extends "base/index.html" %}
 {% block content %}
-<h1>Fermenter - {{ fermenter.tag }}</h1>
+<h1>Fermenter - {{ fermenter.name }}</h1>
 <div class="table-responsive">
   <table class="table">
     <thead>
       <tr>
+        <th class="col-xs-1">fid</th>
         <th class="col-xs-1">sn</th>
-        <th class="col-xs-1">tag</th>
+        <th class="col-xs-1">name</th>
         <th class="col-xs-1">mode</th>
         <th class="col-xs-1">setpoint</th>
         <th class="col-xs-1">hysteresis</th>
@@ -17,8 +18,9 @@
     </thead>
     <tbody>
       <tr>
+        <td>{{ fermenter.fid }}</td>
         <td>{{ fermenter.sn }}</td>
-        <td>{{ fermenter.tag }}</td>
+        <td>{{ fermenter.name }}</td>
         <td>{{ fermenter.get_mode_display }}</td>
         <td>{{ fermenter.setpoint }}</td>
         <td>{{ fermenter.hysteresis }}</td>

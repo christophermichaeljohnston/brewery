@@ -4,11 +4,12 @@ from port.models import Port
 
 class Fermenter(models.Model):
   MODES = (
-    ('C', 'CHILL'),
-    ('H', 'HEAT'),
+    ('0', 'CHILL'),
+    ('1', 'HEAT'),
   )
+  fid = models.IntegerField(default=0)
   sn = models.CharField(max_length=16)
-  tag = models.CharField(max_length=16, default="")
+  name = models.CharField(max_length=16, default="")
   mode = models.CharField(max_length=1, choices=MODES, default="C")
   setpoint = models.DecimalField(max_digits=5, decimal_places=2, default=64.0)
   hysteresis = models.DecimalField(max_digits=2, decimal_places=1, default=0.1)

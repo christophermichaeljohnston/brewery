@@ -23,18 +23,13 @@ class DetailView(generic.DetailView):
   model = Fermenter
 
 def discover(request):
-  messages.info(request, "Discovering...")
-  messages.debug(request,"hello debug")
-  messages.info(request,"hello info")
-  messages.success(request,"hello success")
-  messages.warning(request,"hello warning")
-  messages.error(request,"hello error")
   for port in Port.objects.filter(type='F'):
-    try:
-      f = Fermenter.objects.get(sn=port.sn)
-    except Fermenter.DoesNotExist:
-      f = Fermenter(sn=port.sn)
-    sync(f)
+    for fid in [0,1]:
+      try:
+        f = Fermenter.objects.get(sn=port.sn, fid=fid)
+      except Fermenter.DoesNotExist:
+        f = Fermenter(sn=port.sn, fid=fid)
+      sync(f)
   return redirect('fermenter:list')
 
 def edit(request, pk):
@@ -42,18 +37,18 @@ def edit(request, pk):
   if request.method == "POST":
     form = Form(request.POST)
     if form.is_valid():
-      if not f.tag == request.POST.get("tag"):
-        PortAPI.cmd(f.sn,"setTag,"+request.POST.get("tag"))
+      if not f.name == request.POST.get("name"):
+        PortAPI.cmd(f.sn,"setName,"+str(f.fid)+","+request.POST.get("name"))
       if not f.mode == request.POST.get("mode"):
-        PortAPI.cmd(f.sn,"setMode,"+request.POST.get("mode"))
+        PortAPI.cmd(f.sn,"setMode,"+str(f.fid)+","+request.POST.get("mode"))
       if not float(f.setpoint) == float(request.POST.get("setpoint")):
-        PortAPI.cmd(f.sn,"setSetpoint,"+request.POST.get("setpoint"))
+        PortAPI.cmd(f.sn,"setSetpoint,"+str(f.fid)+","+request.POST.get("setpoint"))
       if not float(f.hysteresis) == float(request.POST.get("hysteresis")):
-        PortAPI.cmd(f.sn,"setHysteresis,"+request.POST.get("hysteresis"))
+        PortAPI.cmd(f.sn,"setHysteresis,"+str(f.fid)+","+request.POST.get("hysteresis"))
       if not f.pumprun == int(request.POST.get("pumprun")):
-        PortAPI.cmd(f.sn,"setPumpRun,"+request.POST.get("pumprun"))
+        PortAPI.cmd(f.sn,"setPumpRun,"+str(f.fid)+","+request.POST.get("pumprun"))
       if not f.pumpdelay == int(request.POST.get("pumpdelay")):
-        PortAPI.cmd(f.sn,"setPumpDelay,"+request.POST.get("pumpdelay"))
+        PortAPI.cmd(f.sn,"setPumpDelay,"+str(f.fid)+","+request.POST.get("pumpdelay"))
     sync(f)
     return redirect('fermenter:detail', pk=f.id)
   else:
@@ -61,17 +56,17 @@ def edit(request, pk):
     return render(request, 'fermenter/form.html', {'form': form, 'fermenter': f})
 
 def sync(f):
-  f.tag = PortAPI.cmd(f.sn, "getTag")
-  f.mode = PortAPI.cmd(f.sn, "getMode")
-  f.setpoint = PortAPI.cmd(f.sn, "getSetpoint")
-  f.hysteresis = PortAPI.cmd(f.sn, "getHysteresis")
-  f.pumprun = PortAPI.cmd(f.sn, "getPumpRun")
-  f.pumpdelay = PortAPI.cmd(f.sn, "getPumpDelay")
+  f.name = PortAPI.cmd(f.sn, "getName,"+str(f.fid))
+  f.mode = PortAPI.cmd(f.sn, "getMode,"+str(f.fid))
+  f.setpoint = PortAPI.cmd(f.sn, "getSetpoint,"+str(f.fid))
+  f.hysteresis = PortAPI.cmd(f.sn, "getHysteresis,"+str(f.fid))
+  f.pumprun = PortAPI.cmd(f.sn, "getPumpRun,"+str(f.fid))
+  f.pumpdelay = PortAPI.cmd(f.sn, "getPumpDelay,"+str(f.fid))
   f.save()
 
 def temperatures(request):
   for f in Fermenter.objects.all():
-    t = PortAPI.cmd(f.sn, "getTemperature")
+    t = PortAPI.cmd(f.sn, "getTemperature,"+str(f.fid))
     dt = timezone.now()
     Temperature.objects.create(fermenter=f, temperature=t, datetime=dt)
   return HttpResponse("saved new temperatures")

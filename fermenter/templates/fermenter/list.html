@@ -5,22 +5,24 @@
   <table class="table">
     <thead>
       <tr>
+        <th class="col-xs-1">fid</th>
         <th class="col-xs-1">sn</th>
-        <th class="col-xs-1">tag</th>
+        <th class="col-xs-1">name</th>
         <th class="col-xs-1">mode</th>
         <th class="col-xs-1">setpoint</th>
         <th class="col-xs-1">hysteresis</th>
         <th class="col-xs-1">pumprun</th>
         <th class="col-xs-1">pumpdelay</th>
-        <th class="col-xs-5">temperature</th>
+        <th class="col-xs-4">temperature</th>
       </tr>
     </thead>
 {% if fermenter_list %}
     <tbody>
 {% for fermenter in fermenter_list %}
       <tr>
-        <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.sn }}</a></td>
-        <td>{{ fermenter.tag }}</td>
+        <td>{{ fermenter.fid }}</td>
+        <td>{{ fermenter.sn }}</td>
+        <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.name }}</a></td>
         <td>{{ fermenter.get_mode_display }}</td>
         <td>{{ fermenter.setpoint }}</td>
         <td>{{ fermenter.hysteresis }}</td>
