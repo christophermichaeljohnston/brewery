@@ -4,8 +4,9 @@ from port.models import Port
 
 class Fermenter(models.Model):
   MODES = (
-    ('0', 'CHILL'),
-    ('1', 'HEAT'),
+    ('0', 'OFF'),
+    ('1', 'CHILL'),
+    ('2', 'HEAT'),
   )
   fid = models.IntegerField()
   sn = models.CharField(max_length=16)
