@@ -6,4 +6,4 @@ class Form(forms.ModelForm):
 
   class Meta:
     model = Fermenter
-    fields = ('name', 'mode', 'setpoint', 'hysteresis', 'pumprun', 'pumpdelay')
+    fields = ('name', 'mode', 'setpoint', 'hysteresis', 'rampstep', 'ramppoint', 'rampdelay', 'pumprun', 'pumpdelay')

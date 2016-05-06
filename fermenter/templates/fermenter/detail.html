@@ -7,13 +7,16 @@
       <tr>
         <th class="col-xs-1">fid</th>
         <th class="col-xs-1">sn</th>
-        <th class="col-xs-2">name</th>
+        <th class="col-xs-1">name</th>
         <th class="col-xs-1">mode</th>
         <th class="col-xs-1">setpoint</th>
         <th class="col-xs-1">hysteresis</th>
+        <th class="col-xs-1">rampstep</th>
+        <th class="col-xs-1">ramppoint</th>
+        <th class="col-xs-1">rampdelay</th>
         <th class="col-xs-1">pumprun</th>
         <th class="col-xs-1">pumpdelay</th>
-        <th class="col-xs-3">temperature</th>
+        <th class="col-xs-1">temperature</th>
       </tr>
     </thead>
     <tbody>
@@ -24,6 +27,9 @@
         <td>{{ fermenter.get_mode_display }}</td>
         <td>{{ fermenter.setpoint }}</td>
         <td>{{ fermenter.hysteresis }}</td>
+        <td>{{ fermenter.rampstep }}</td>
+        <td>{{ fermenter.ramppoint }}</td>
+        <td>{{ fermenter.rampdelay }}</td>
         <td>{{ fermenter.pumprun }}</td>
         <td>{{ fermenter.pumpdelay }}</td>
         <td>{{ fermenter.temperature_set.last.temperature }} F <small><small>({{ fermenter.temperature_set.last.datetime|timesince }} ago)</small></small></td>

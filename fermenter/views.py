@@ -45,6 +45,12 @@ def edit(request, pk):
         PortAPI.cmd(f.sn,"setSetpoint,"+str(f.fid)+","+request.POST.get("setpoint"))
       if not float(f.hysteresis) == float(request.POST.get("hysteresis")):
         PortAPI.cmd(f.sn,"setHysteresis,"+str(f.fid)+","+request.POST.get("hysteresis"))
+      if not f.rampstep == float(request.POST.get("rampstep")):
+        PortAPI.cmd(f.sn,"setRampStep,"+str(f.fid)+","+request.POST.get("rampstep"))
+      if not f.ramppoint == float(request.POST.get("ramppoint")):
+        PortAPI.cmd(f.sn,"setRampPoint,"+str(f.fid)+","+request.POST.get("ramppoint"))
+      if not f.rampdelay == int(request.POST.get("rampdelay")):
+        PortAPI.cmd(f.sn,"setRampDelay,"+str(f.fid)+","+request.POST.get("rampdelay"))
       if not f.pumprun == int(request.POST.get("pumprun")):
         PortAPI.cmd(f.sn,"setPumpRun,"+str(f.fid)+","+request.POST.get("pumprun"))
       if not f.pumpdelay == int(request.POST.get("pumpdelay")):
@@ -60,6 +66,9 @@ def sync(f):
   f.mode = PortAPI.cmd(f.sn, "getMode,"+str(f.fid))
   f.setpoint = PortAPI.cmd(f.sn, "getSetpoint,"+str(f.fid))
   f.hysteresis = PortAPI.cmd(f.sn, "getHysteresis,"+str(f.fid))
+  f.rampstep = PortAPI.cmd(f.sn, "getRampStep,"+str(f.fid))
+  f.ramppoint = PortAPI.cmd(f.sn, "getRampPoint,"+str(f.fid))
+  f.rampdelay = PortAPI.cmd(f.sn, "getRampDelay,"+str(f.fid))
   f.pumprun = PortAPI.cmd(f.sn, "getPumpRun,"+str(f.fid))
   f.pumpdelay = PortAPI.cmd(f.sn, "getPumpDelay,"+str(f.fid))
   f.save()
