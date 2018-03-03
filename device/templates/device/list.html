@@ -1,0 +1,25 @@
+{% extends "base/index.html" %}
+{% block content %}
+<div class="container">
+<h1 class="display-4 mt-3">Devices</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th>device</th>
+      <th>connected</th>
+    </tr>
+  </thead>
+{% if device_list %}
+  <tbody>
+{% for device in device_list %}
+    <tr>
+      <td>{{ device.device }}</td>
+      <td>{{ device.connected }}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+{% endif %}
+</table>
+<a class="btn btn-secondary" href="{% url 'device:discover' %}"><i class="fa fa-eye"></i> Discover</a>
+</div>
+{% endblock content %}

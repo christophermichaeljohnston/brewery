@@ -1,49 +1,57 @@
 {% extends "base/index.html" %}
 {% block content %}
-<h1>Fermenter - {{ fermenter.name }}</h1>
-<div class="table-responsive">
-  <table class="table">
-    <thead>
-      <tr>
-        <th class="col-xs-1">fid</th>
-        <th class="col-xs-1">sn</th>
-        <th class="col-xs-1">name</th>
-        <th class="col-xs-1">mode</th>
-        <th class="col-xs-1">setpoint</th>
-        <th class="col-xs-1">hysteresis</th>
-        <th class="col-xs-1">rampstep</th>
-        <th class="col-xs-1">ramppoint</th>
-        <th class="col-xs-1">rampdelay</th>
-        <th class="col-xs-1">pumprun</th>
-        <th class="col-xs-1">pumpdelay</th>
-        <th class="col-xs-1">temperature</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{ fermenter.fid }}</td>
-        <td>{{ fermenter.sn }}</td>
-        <td>{{ fermenter.name }}</td>
-        <td>{{ fermenter.get_mode_display }}</td>
-        <td>{{ fermenter.setpoint }}</td>
-        <td>{{ fermenter.hysteresis }}</td>
-        <td>{{ fermenter.rampstep }}</td>
-        <td>{{ fermenter.ramppoint }}</td>
-        <td>{{ fermenter.rampdelay }}</td>
-        <td>{{ fermenter.pumprun }}</td>
-        <td>{{ fermenter.pumpdelay }}</td>
-        <td>{{ fermenter.temperature_set.last.temperature }} F <small><small>({{ fermenter.temperature_set.last.datetime|timesince }} ago)</small></small></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-<div class="row">
-<div class="col-md-6">
-<a class="btn btn-default" href="{% url 'fermenter:edit' fermenter.id %}"><i class="fa fa-pencil-square-o"></i> Edit</a>
-<a class="btn btn-default" href="{% url 'fermenter:chart' fermenter.id %}"><i class="fa fa-line-chart"></i> Chart</a>
-</div>
-<div class="col-md-6 text-right">
-<a class="btn btn-default" href="{% url 'fermenter:list' %}"><i class="fa fa-arrow-left"></i> Back</a>
-</div>
+<div class="container">
+  <h4 class="mt-4">Fermenter - {{ fermenter.name }}</h4>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>device</th>
+          <th>sn</th>
+          <th>fid</th>
+          <th>mode</th>
+          <th>setpoint</th>
+          <th>hysteresis</th>
+          <th>pumprun</th>
+          <th>pumpdelay</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ fermenter.component.device.device }}</td>
+          <td>{{ fermenter.component.sn }}</td>
+          <td>{{ fermenter.fid }}</td>
+          <td>{{ fermenter.get_mode_display }}</td>
+          <td>{{ fermenter.setpoint }}</td>
+          <td>{{ fermenter.hysteresis }}</td>
+          <td>{{ fermenter.pumprun }}</td>
+          <td>{{ fermenter.pumpdelay }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <h4 class="mt-2">Tasks</h4>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>task</th>
+          <th>run_at</th>
+        </tr>
+      </thead>
+      <tbody>
+{% for task in tasks %}
+        <tr>
+          <td>{{ task.task_name }}</td>
+          <td class="text-nowrap">{{ task.run_at }}</td>
+        </tr>
+      </tbody>
+{% endfor %}
+    </table>
+  </div>
+  <div class="text-center">
+    <a class="btn btn-light" href="{% url 'fermenter:list' %}"><i class="fas fa-arrow-left"></i> Back</a>
+    <a class="btn btn-light" href="{% url 'fermenter:edit' fermenter.id %}"><i class="far fa-edit"></i> Edit</a>
+  </div>
 </div>
 {% endblock content %}

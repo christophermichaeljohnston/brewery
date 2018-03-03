@@ -1,51 +1,27 @@
 {% extends "base/index.html" %}
 {% block content %}
-<h1>Fermenters</h1>
-<div class="table-responsive">
-  <table class="table">
-    <thead>
-      <tr>
-        <th class="col-xs-1">fid</th>
-        <th class="col-xs-1">sn</th>
-        <th class="col-xs-1">name</th>
-        <th class="col-xs-1">mode</th>
-        <th class="col-xs-1">setpoint</th>
-        <th class="col-xs-1">hysteresis</th>
-        <th class="col-xs-1">rampstep</th>
-        <th class="col-xs-1">ramppoint</th>
-        <th class="col-xs-1">rampdelay</th>
-        <th class="col-xs-1">pumprun</th>
-        <th class="col-xs-1">pumpdelay</th>
-        <th class="col-xs-1">temperature</th>
-      </tr>
-    </thead>
+<div class="container">
+<h1 class="display-4 mt-3">Fermenters</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>mode</th>
+      <th>setpoint</th>
+      <th>temperature</th>
+    </tr>
+  </thead>
 {% if fermenter_list %}
-    <tbody>
+  <tbody>
 {% for fermenter in fermenter_list %}
-      <tr>
-        <td>{{ fermenter.fid }}</td>
-        <td>{{ fermenter.sn }}</td>
-        <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.name }}</a></td>
-        <td>{{ fermenter.get_mode_display }}</td>
-        <td>{{ fermenter.setpoint }}</td>
-        <td>{{ fermenter.hysteresis }}</td>
-        <td>{{ fermenter.rampstep }}</td>
-        <td>{{ fermenter.ramppoint }}</td>
-        <td>{{ fermenter.rampdelay }}</td>
-        <td>{{ fermenter.pumprun }}</td>
-        <td>{{ fermenter.pumpdelay }}</td>
-        <td>{{ fermenter.temperature_set.last.temperature }} F <small><small>({{ fermenter.temperature_set.last.datetime|timesince }} ago)</small></small></td>
-      </tr>
+    <tr>
+      <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.name }}</a></td>
+      <td>{{ fermenter.get_mode_display }}</td>
+      <td>{{ fermenter.setpoint }}</td>
+      <td>{{ fermenter.temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
+    </tr>
 {% endfor %}
+  </tbody>
 {% endif %}
-    </tbody>
-  </table>
-</div>
-<div class="row">
-<div class="col-md-6">
-<a class="btn btn-default" href="{% url 'fermenter:discover' %}"><i class="fa fa-eye"></i> Discover</a>
-</div>
-<div class="col-md-6 text-right">
-</div>
-</div>
+</table>
 {% endblock content %}

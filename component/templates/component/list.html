@@ -1,0 +1,25 @@
+{% extends "base/index.html" %}
+{% block content %}
+<div class="container">
+<h1 class="display-4 mt-3">Components</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th>device</th>
+      <th>sn</th>
+      <th>type</th>
+    </tr>
+  </thead>
+{% if component_list %}
+  <tbody>
+{% for component in component_list %}
+    <tr>
+      <td>{{ component.device.device }}</td>
+      <td>{{ component.sn }}</td>
+      <td>{{ component.type }}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+{% endif %}
+</table>
+{% endblock content %}
