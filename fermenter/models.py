@@ -43,7 +43,8 @@ class Fermenter(models.Model):
   @background()
   def ramp_temperature(fermenter_id, setpoint):
     f = Fermenter.objects.get(pk=fermenter_id)
-    f.setpoint = Decimal(setpoint)
+    Device.serial_cmd(f.component.device.device, "setSetpoint,"+str(f.fid)+","+setpoint)
+    f.setpoint = Device.serial_cmd(f.component.device.device, "getSetpoint,"+str(f.fid))
     f.save()
 
   @classmethod
@@ -53,7 +54,11 @@ class Fermenter(models.Model):
         f = cls.objects.get(component=component, fid=fid)
       except Fermenter.DoesNotExist:
         f = cls.objects.create(component=component, fid=fid)
+      f.mode = Device.serial_cmd(f.component.device.device,'getMode,'+str(f.fid))
       f.setpoint = Device.serial_cmd(f.component.device.device,'getSetpoint,'+str(f.fid))
+      f.hysteresis = Device.serial_cmd(f.component.device.device,'getHysteresis,'+str(f.fid))
+      f.pumprun = Device.serial_cmd(f.component.device.device, 'getPumpRun,'+str(f.fid))
+      f.pumpdelay = Device.serial_cmd(f.component.device.device, 'getPumpDelay,'+str(f.fid))
       f.save()
       verbose_name="probe_temperature_"+str(f.id)
       try:

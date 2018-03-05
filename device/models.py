@@ -20,15 +20,15 @@ class Device(models.Model):
 
   def serial_open(device):
     global devices
-    # open it
-    devices[device] = 'foo'
+    devices[device] = serial.Serial(port=device, baudrate=9600, timeout=1.0, write_timeout=1.0)
+    time.sleep(3)
     d = Device.objects.get(device=device)
     d.connected=True
     d.save()
 
   def serial_close(device):
     global devices
-    #devices[device].close()
+    devices[device].close()
     d = Device.objects.get(device=device)
     d.connected=False
     d.save()
@@ -51,20 +51,8 @@ class Device(models.Model):
     import random
     with transaction.atomic():
       lock = cls.objects.select_for_update().get(device=device)
-      #devices[device].reset_input_buffer()
-      #devices[device].reset_output_buffer()
-      #devices[device].write((cmd+"\n").encode())
-      #result = devices[device].readline().decode().rstrip('\n').rstrip('\r')
-      if cmd == 'getSN':
-        result = device
-      elif cmd == 'getType':
-        result = "FERMENTER"
-      elif cmd == 'getSetpoint,0':
-        result = 64
-      elif cmd == 'getSetpoint,1':
-        result = 64
-      elif cmd == 'getTemperature,0':
-        result = 63 + (random.randint(0,20)/10)
-      elif cmd == 'getTemperature,1':
-        result = 63 + (random.randint(0,20)/10)
+      devices[device].reset_input_buffer()
+      devices[device].reset_output_buffer()
+      devices[device].write((cmd+"\n").encode())
+      result = devices[device].readline().decode().rstrip('\n').rstrip('\r')
       return result
