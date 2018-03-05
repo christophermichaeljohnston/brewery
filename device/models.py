@@ -2,9 +2,9 @@ from django.db import models, transaction
 
 import glob
 import serial
+import time
 
-#DEVICE_PATH = "/dev/ttyACM*"
-DEVICE_PATH = '/dev/ttyS*'
+DEVICE_PATH = "/dev/ttyACM*"
 devices = {}
 
 class Device(models.Model):
@@ -48,7 +48,8 @@ class Device(models.Model):
   @classmethod
   def serial_cmd(cls, device, cmd):
     global devices
-    import random
+    if device not in devices:
+      cls.serial_open(device)
     with transaction.atomic():
       lock = cls.objects.select_for_update().get(device=device)
       devices[device].reset_input_buffer()

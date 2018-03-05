@@ -1,11 +1,14 @@
 from django.shortcuts import redirect, render
+from django.http import HttpResponse
 from django.views import generic
+from django.utils import timezone
 
 from background_task.models import Task
 
 from .forms import FermenterForm
 
 from .models import Fermenter
+
 
 class ListView(generic.ListView):
   template_name = "fermenter/list.html"
@@ -33,3 +36,14 @@ def edit(request, pk):
   else:
     form = FermenterForm(instance=f)
     return render(request, 'fermenter/form.html', {'form': form, 'fermenter': f})
+
+def get_temperature(requuest, pk):
+  from device.models import Device
+  from beer.models import Temperature
+  f = Fermenter.objects.get(pk=pk)
+  f.temperature = Device.serial_cmd(f.component.device.device, "getTemperature,"+str(f.fid))
+  f.datetime = timezone.now()
+  f.save()
+  if hasattr(f, 'beer'):
+    Temperature.objects.create(beer=f.beer, setpoint=f.setpoint, measured=f.temperature, datetime=timezone.now())
+  return HttpResponse(f.temperature)

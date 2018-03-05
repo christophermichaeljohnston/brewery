@@ -10,6 +10,9 @@ from background_task.models import Task
 from decimal import *
 from datetime import timedelta
 
+import urllib.request
+
+
 class Fermenter(models.Model):
   MODES = (
     ('0', 'OFF'),
@@ -33,12 +36,7 @@ class Fermenter(models.Model):
   @background()
   def probe_temperature(fermenter_id):
     f = Fermenter.objects.get(pk=fermenter_id)
-    f.temperature = Device.serial_cmd(f.component.device.device, "getTemperature,"+str(f.fid))
-    f.datetime = timezone.now()
-    f.save()
-    if hasattr(f, 'beer'):
-      from beer.models import Temperature
-      Temperature.objects.create(beer=f.beer, setpoint=f.setpoint, measured=f.temperature, datetime=timezone.now())
+    urllib.request.urlopen('http://localhost:8000/fermenter/'+str(f.id)+'/get_temperature')
 
   @background()
   def ramp_temperature(fermenter_id, setpoint):
@@ -57,8 +55,8 @@ class Fermenter(models.Model):
       f.mode = Device.serial_cmd(f.component.device.device,'getMode,'+str(f.fid))
       f.setpoint = Device.serial_cmd(f.component.device.device,'getSetpoint,'+str(f.fid))
       f.hysteresis = Device.serial_cmd(f.component.device.device,'getHysteresis,'+str(f.fid))
-      f.pumprun = Device.serial_cmd(f.component.device.device, 'getPumpRun,'+str(f.fid))
-      f.pumpdelay = Device.serial_cmd(f.component.device.device, 'getPumpDelay,'+str(f.fid))
+      f.pumprun = Decimal(Device.serial_cmd(f.component.device.device, 'getPumpRun,'+str(f.fid)))/1000
+      f.pumpdelay = int(Device.serial_cmd(f.component.device.device, 'getPumpDelay,'+str(f.fid)))/1000
       f.save()
       verbose_name="probe_temperature_"+str(f.id)
       try:
@@ -68,8 +66,6 @@ class Fermenter(models.Model):
 
   @classmethod
   def ramp(cls, fermenter, new_setpoint, step, interval):
-    import logging
-    logger = logging.getLogger(__name__)
     new = fermenter.setpoint
     end = Decimal(new_setpoint)
     when = 0

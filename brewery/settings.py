@@ -81,10 +81,17 @@ WSGI_APPLICATION = 'brewery.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+  'default': {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'brewery',
+    'USER': 'brewery',
+    'PASSWORD': 'Fr33B33r!',
+    'HOST': '192.168.1.200',
+    'PORT': '3307',
+    'OPTIONS': {
+      'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+    },
+  }
 }
 
 
