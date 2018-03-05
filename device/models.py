@@ -59,8 +59,12 @@ class Device(models.Model):
         result = device
       elif cmd == 'getType':
         result = "FERMENTER"
+      elif cmd == 'getSetpoint,0':
+        result = 64
+      elif cmd == 'getSetpoint,1':
+        result = 64
       elif cmd == 'getTemperature,0':
-        result = 64 + (random.randint(0,10)/10)
+        result = 63 + (random.randint(0,20)/10)
       elif cmd == 'getTemperature,1':
-        result = 64 + (random.randint(0,10)/10)
-    return result
+        result = 63 + (random.randint(0,20)/10)
+      return result

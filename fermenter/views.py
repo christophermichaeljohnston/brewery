@@ -17,7 +17,7 @@ class DetailView(generic.DetailView):
   model = Fermenter
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    context['tasks'] = Task.objects.filter(verbose_name__regex=r'_'+str(self.kwargs['pk']+'$')).order_by('run_at')
+    context['tasks'] = Task.objects.filter(verbose_name__regex=r'_'+str(self.kwargs['pk'])+'$').order_by('run_at')
     return context
 
 def edit(request, pk):

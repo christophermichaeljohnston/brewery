@@ -1,27 +1,42 @@
 {% extends "base/index.html" %}
 {% block content %}
 <div class="container">
-<h1 class="display-4 mt-3">Fermenters</h1>
-<table class="table">
-  <thead>
-    <tr>
-      <th>name</th>
-      <th>mode</th>
-      <th>setpoint</th>
-      <th>temperature</th>
-    </tr>
-  </thead>
+  <div class="row mt-4">
+    <div class="col">
+      <h4>Fermenters</h4>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>beer</th>
+            <th>mode</th>
+            <th>setpoint</th>
+            <th>temperature</th>
+          </tr>
+        </thead>
 {% if fermenter_list %}
-  <tbody>
+        <tbody>
 {% for fermenter in fermenter_list %}
-    <tr>
-      <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.name }}</a></td>
-      <td>{{ fermenter.get_mode_display }}</td>
-      <td>{{ fermenter.setpoint }}</td>
-      <td>{{ fermenter.temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
-    </tr>
-{% endfor %}
-  </tbody>
+          <tr>
+            <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.name }}</a></td>
+{% if fermenter.beer %}
+            <td><a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a></td>
+{% else %}
+            <td></td>
 {% endif %}
-</table>
+            <td>{{ fermenter.get_mode_display }}</td>
+            <td>{{ fermenter.setpoint }}</td>
+            <td>{{ fermenter.temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
+          </tr>
+{% endfor %}
+        </tbody>
+{% endif %}
+      </table>
+    </div>
+  </div>
+</div>
 {% endblock content %}

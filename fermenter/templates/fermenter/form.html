@@ -1,8 +1,16 @@
 {% extends "base/index.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
+<div class="container">
+<h4 class="mt-4">{{ fermenter.name }} - {% if fermenter.beer %}<a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}empty{% endif %}</h4>
 <form method="post">
 {% csrf_token %}
-{{ form }}
-<button type="submit">Submit</button>
+{{ form|crispy }}
+  <div class="text-center">
+<div class="row">
+<div class="col text-left"><button type="submit" class="btn btn-light">Save</button></div>
+<div class="col text-right"><a class="btn btn-light" href="{% url 'fermenter:detail' fermenter.id %}"><i class="fas fa-arrow-left"></i> Back</a></div>
+</div>
 </form>
+<div>
 {% endblock content %}

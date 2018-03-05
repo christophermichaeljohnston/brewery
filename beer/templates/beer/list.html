@@ -1,0 +1,41 @@
+{% extends "base/index.html" %}
+{% block content %}
+<div class="container">
+  <div class="row mt-4">
+    <div class="col">
+       <h4>Beers</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>fermenter</th>
+          </tr>
+        </thead>
+{% if beer_list %}
+        <tbody>
+{% for beer in beer_list %}
+          <tr>
+            <td><a href="{% url 'beer:detail' beer.id %}">{{ beer.name }}</a></td>
+{% if beer.fermenter %}
+            <td><a href="{% url 'fermenter:detail' beer.fermenter.id %}">{{ beer.fermenter.name }}</a></td>
+{% else %}
+            <td></td>
+{% endif %}
+          </tr>
+{% endfor %}
+        </tbody>
+{% endif %}
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col text-left">
+      <a class="btn btn-light" href="{% url 'beer:create' %}"><i class="far fa-plus-square"></i> Create</a>
+    </div>
+  </div>
+</div>
+{% endblock content %}

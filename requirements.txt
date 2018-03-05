@@ -1,4 +1,5 @@
 django
 django-background-tasks
+django-crispy-forms
 pyserial
 mysqlclient

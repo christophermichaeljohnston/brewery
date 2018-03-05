@@ -1,7 +1,7 @@
 {% extends "base/index.html" %}
 {% block content %}
 <div class="container">
-<h1 class="display-4 mt-3">Devices</h1>
+<h4 class="mt-4">Devices</h4>
 <table class="table">
   <thead>
     <tr>
@@ -20,6 +20,6 @@
   </tbody>
 {% endif %}
 </table>
-<a class="btn btn-secondary" href="{% url 'device:discover' %}"><i class="fa fa-eye"></i> Discover</a>
+<a class="btn btn-light" href="{% url 'device:discover' %}"><i class="fa fa-eye"></i> Discover</a>
 </div>
 {% endblock content %}
