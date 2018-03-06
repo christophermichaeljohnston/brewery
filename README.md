@@ -7,8 +7,8 @@ and provides graphs of collected temperatures.
 
 # run it
 
-docker-compose build
-docker-compuse up -d
+ - docker-compose build
+ - docker-compose up -d
 
 # notes
 
