@@ -15,7 +15,7 @@ from background_task.models import Task
 class ListView(generic.ListView):
   template_name = 'beer/list.html'
   def get_queryset(self):
-    return Beer.objects.all()
+    return Beer.objects.order_by('-created')
 
 class DetailView(generic.DetailView):
   template_name = "beer/detail.html"
@@ -31,7 +31,7 @@ def create(request):
   if request.method == 'POST':
     form = BeerForm(request.POST)
     if form.is_valid():
-      b = Beer.objects.create(name=request.POST.get('name'))
+      b = Beer.objects.create(name=request.POST.get('name'), created=timezone.now())
     return redirect('beer:list')
   else:
     form = BeerForm()

@@ -5,6 +5,7 @@ from fermenter.models import Fermenter
 class Beer(models.Model):
   fermenter = models.OneToOneField(Fermenter, on_delete=False, null=True, blank=True)
   name = models.CharField(max_length=16, null=True, blank=True)
+  created = models.DateTimeField(null=True, blank=True)
 
 class Temperature(models.Model):
   beer = models.ForeignKey(Beer, on_delete=models.CASCADE)

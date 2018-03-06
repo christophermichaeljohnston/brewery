@@ -13,6 +13,7 @@
           <tr>
             <th>name</th>
             <th>fermenter</th>
+            <th>created</th>
           </tr>
         </thead>
 {% if beer_list %}
@@ -25,6 +26,7 @@
 {% else %}
             <td></td>
 {% endif %}
+            <td>{{ beer.created }}</td>
           </tr>
 {% endfor %}
         </tbody>

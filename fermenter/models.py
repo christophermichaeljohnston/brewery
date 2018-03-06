@@ -36,14 +36,12 @@ class Fermenter(models.Model):
   @background()
   def probe_temperature(fermenter_id):
     f = Fermenter.objects.get(pk=fermenter_id)
-    urllib.request.urlopen('http://localhost:8000/fermenter/'+str(f.id)+'/get_temperature')
+    urllib.request.urlopen('http://localhost:8000/fermenter/'+str(f.id)+'/get_temperature/')
 
   @background()
   def ramp_temperature(fermenter_id, setpoint):
     f = Fermenter.objects.get(pk=fermenter_id)
-    Device.serial_cmd(f.component.device.device, "setSetpoint,"+str(f.fid)+","+setpoint)
-    f.setpoint = Device.serial_cmd(f.component.device.device, "getSetpoint,"+str(f.fid))
-    f.save()
+    urllib.request.urlopen('http://localhost:8000/fermenter/'+str(f.id)+'/set_setpoint/?setpoint='+setpoint)
 
   @classmethod
   def discover(cls, component):
