@@ -27,7 +27,7 @@ class Fermenter(models.Model):
   hysteresis = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=True)
   pumprun = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
   pumpdelay = models.IntegerField(null=True, blank=True)
-  temperature = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+  temperature = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
   datetime = models.DateTimeField(null=True, blank=True)
 
   def __str__(self):
@@ -36,12 +36,12 @@ class Fermenter(models.Model):
   @background()
   def probe_temperature(fermenter_id):
     f = Fermenter.objects.get(pk=fermenter_id)
-    urllib.request.urlopen('http://localhost:8000/fermenter/'+str(f.id)+'/get_temperature/')
+    urllib.request.urlopen('http://127.0.0.1:8000/fermenter/'+str(f.id)+'/get_temperature/')
 
   @background()
   def ramp_temperature(fermenter_id, setpoint):
     f = Fermenter.objects.get(pk=fermenter_id)
-    urllib.request.urlopen('http://localhost:8000/fermenter/'+str(f.id)+'/set_setpoint/?setpoint='+setpoint)
+    urllib.request.urlopen('http://127.0.0.1:8000/fermenter/'+str(f.id)+'/set_setpoint/?setpoint='+setpoint)
 
   @classmethod
   def discover(cls, component):
@@ -64,13 +64,22 @@ class Fermenter(models.Model):
 
   @classmethod
   def ramp(cls, fermenter, new_setpoint, step, interval):
-    new = fermenter.setpoint
-    end = Decimal(new_setpoint)
-    when = 0
-    while new < end:
-      when += int(interval)
-      new += Decimal(step)
-      if new > end:
-        new = end
-      verbose_name="ramp_temperature_"+str(new)+"_"+str(fermenter.id)
-      cls.ramp_temperature(fermenter.id, str(new), verbose_name=verbose_name, schedule=timedelta(minutes=when))
+    setpoint = fermenter.setpoint
+    target = Decimal(new_setpoint)
+    schedule = 0
+    if target > setpoint:
+      while setpoint < target:
+        setpoint += Decimal(step)
+        if setpoint > target:
+            setpoint = target
+        verbose_name="ramp_temperature_"+str(setpoint)+"_"+str(fermenter.id)
+        cls.ramp_temperature(fermenter.id, str(setpoint), verbose_name=verbose_name, schedule=timedelta(minutes=schedule))
+        schedule += int(interval)
+    else:
+      while setpoint > target:
+        setpoint -= Decimal(step)
+        if setpoint < target:
+            setpoint = target
+        verbose_name="ramp_temperature_"+str(setpoint)+"_"+str(fermenter.id)
+        cls.ramp_temperature(fermenter.id, str(setpoint), verbose_name=verbose_name, schedule=timedelta(minutes=schedule))
+        schedule += int(interval)

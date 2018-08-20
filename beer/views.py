@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.views import generic
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.db.models import Avg
+
 import json
 
 from .models import Beer, Temperature
@@ -91,13 +93,32 @@ def stop_ramp(request, pk):
   return redirect('beer:detail', b.id)
 
 def chart_data(request, pk):
+  period = request.GET.get('period')
   b = Beer.objects.get(pk=pk)
-  ts = b.temperature_set.order_by('datetime')
+  if period == 'hour':
+    delta = timezone.now() - timedelta(hours=1)
+    div = 60
+  elif period == 'day':
+    delta = timezone.now() - timedelta(days=1)
+    div = 60*5
+  elif period == 'week':
+    delta = timezone.now() - timedelta(weeks=1)
+    div = 60*30
+  else:
+    delta = b.temperature_set.first().datetime
+    count = b.temperature_set.count()
+    if count > 336:
+      div = count*60/336
+    else:
+      div = 60
+
+  ts = b.temperature_set.filter(datetime__gte=delta).extra(select={'timestamp':'unix_timestamp(datetime) div '+str(div)}).values('timestamp').annotate(avg_measured=Avg('measured')).annotate(avg_setpoint=Avg('setpoint')).order_by('timestamp')
+
   response = {}
   response['data'] = {}
   response['data']['setpoint'] = []
   response['data']['measured'] = []
   for t in ts:
-    response['data']['setpoint'].append([int(t.datetime.strftime('%s'))*1000,float(t.setpoint)])
-    response['data']['measured'].append([int(t.datetime.strftime('%s'))*1000,float(t.measured)])
+    response['data']['setpoint'].append([t['timestamp']*div*1000,float(t['avg_setpoint'])])
+    response['data']['measured'].append([t['timestamp']*div*1000,float(t['avg_measured'])])
   return HttpResponse(json.dumps(response), content_type="application/json")

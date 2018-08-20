@@ -1,25 +1,37 @@
 {% extends "base/index.html" %}
 {% block content %}
 <div class="container">
-<h4 class="mt-4">Devices</h4>
-<table class="table">
-  <thead>
-    <tr>
-      <th>device</th>
-      <th>connected</th>
-    </tr>
-  </thead>
+  <div class="card mt-4 mb-4">
+    <div class="card-header">
+      Components
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>device</th>
+              <th>connected</th>
+            </tr>
+          </thead>
 {% if device_list %}
-  <tbody>
+          <tbody>
 {% for device in device_list %}
-    <tr>
-      <td>{{ device.device }}</td>
-      <td>{{ device.connected }}</td>
-    </tr>
+            <tr>
+              <td>{{ device.device }}</td>
+              <td>{{ device.connected }}</td>
+            </tr>
 {% endfor %}
-  </tbody>
+          </tbody>
 {% endif %}
-</table>
-<a class="btn btn-light" href="{% url 'device:discover' %}"><i class="fa fa-eye"></i> Discover</a>
+        </table>
+      </div>
+      <div class="row mt-2 mb-2">
+        <div class="col ml-2 text-left">
+          <a class="btn btn-light" href="{% url 'device:discover' %}"><i class="fa fa-eye"></i> Discover</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock content %}

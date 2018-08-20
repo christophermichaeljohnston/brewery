@@ -1,73 +1,71 @@
 {% extends "base/index.html" %}
 {% block content %}
 <div class="container">
-  <div class="row mt-4">
-    <div class="col">
-      <h4>{{ fermenter.name }} - {% if fermenter.beer %}<a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}empty{% endif %}</h4>
+  <div class="card mt-4">
+    <div class="card-header">
+      Fermenter
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>beer</th>
+              <th>mode</th>
+              <th>setpoint</th>
+              <th>temperature</th>
+              <th>hysteresis</th>
+              <th>pumprun</th>
+              <th>pumpdelay</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ fermenter.name }}</td>
+              <td>{% if fermenter.beer %}<a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}empty{% endif %}</td>
+              <td>{{ fermenter.get_mode_display }}</td>
+              <td>{{ fermenter.setpoint }} F</td>
+              <td>{{ fermenter.temperature }} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
+              <td>{{ fermenter.hysteresis }}</td>
+              <td>{{ fermenter.pumprun }}</td>
+              <td>{{ fermenter.pumpdelay }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row mt-2 mb-2">
+        <div class="col ml-2 text-left"><a class="btn btn-light" href="{% url 'fermenter:edit' fermenter.id %}"><i class="far fa-edit"></i> Edit</a></div>
+        <div class="col mr-2 text-right"><a class="btn btn-light" href="{% url 'fermenter:list' %}"><i class="fas fa-arrow-left"></i> Back</a></div>
+      </div>
     </div>
   </div>
-  <div class="row mt-2">
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>device</th>
-            <th>sn</th>
-            <th>fid</th>
-            <th>mode</th>
-            <th>setpoint</th>
-            <th>temperature</th>
-            <th>hysteresis</th>
-            <th>pumprun</th>
-            <th>pumpdelay</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ fermenter.component.device.device }}</td>
-            <td>{{ fermenter.component.sn }}</td>
-            <td>{{ fermenter.fid }}</td>
-            <td>{{ fermenter.get_mode_display }}</td>
-            <td>{{ fermenter.setpoint }} F</td>
-            <td>{{ fermenter.temperature }} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
-            <td>{{ fermenter.hysteresis }}</td>
-            <td>{{ fermenter.pumprun }}</td>
-            <td>{{ fermenter.pumpdelay }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="card mt-4 mb-4">
+    <div class="card-header">
+      Tasks
     </div>
-  </div>
-  <div class="row mt-2">
-    <div class="col">
-      <h4>Tasks</h4>
-    </div>
-  </div>
-  <div class="row">
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>task</th>
-            <th>run_at</th>
-            <th>last_error</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>task</th>
+              <th>run_at</th>
+              <th>last_error</th>
+            </tr>
+          </thead>
+          <tbody>
 {% for task in tasks %}
-          <tr>
-            <td>{{ task.verbose_name }}</td>
-            <td class="text-nowrap">{{ task.run_at|timeuntil }}</td>
-            <td class="text-nowrap">{{ task.last_error }}</td>
-          </tr>
-        </tbody>
+            <tr>
+              <td>{{ task.verbose_name }}</td>
+              <td class="text-nowrap">{{ task.run_at|timeuntil }}</td>
+              <td class="text-nowrap">{{ task.last_error }}</td>
+            </tr>
+          </tbody>
 {% endfor %}
-      </table>
+        </table>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col text-left"><a class="btn btn-light" href="{% url 'fermenter:edit' fermenter.id %}"><i class="far fa-edit"></i> Edit</a></div>
-    <div class="col text-right"><a class="btn btn-light" href="{% url 'fermenter:list' %}"><i class="fas fa-arrow-left"></i> Back</a></div>
   </div>
 </div>
 {% endblock content %}

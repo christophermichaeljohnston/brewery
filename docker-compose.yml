@@ -3,11 +3,9 @@ version: '3'
 services:
   web:
     build: .
-    #command: bash -c "python3 manage.py process_tasks"
-    #command: bash -c "python3 manage.py runserver 0.0.0.0:8000"
-    command: bash -c ./startup.sh
+    command: /code/startup.sh
     privileged: true
     volumes:
       - .:/code
     ports:
-      - "8000:8000"
+      - "80:8000"

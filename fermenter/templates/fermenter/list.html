@@ -1,41 +1,41 @@
 {% extends "base/index.html" %}
 {% block content %}
 <div class="container">
-  <div class="row mt-4">
-    <div class="col">
-      <h4>Fermenters</h4>
+  <div class="card mt-4 mb-4">
+    <div class="card-header">
+      Fermenters
     </div>
-  </div>
-  <div class="row mt-2">
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>name</th>
-            <th>beer</th>
-            <th>mode</th>
-            <th>setpoint</th>
-            <th>temperature</th>
-          </tr>
-        </thead>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>beer</th>
+              <th>mode</th>
+              <th>setpoint</th>
+              <th>temperature</th>
+            </tr>
+          </thead>
 {% if fermenter_list %}
-        <tbody>
+          <tbody>
 {% for fermenter in fermenter_list %}
-          <tr>
-            <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.name }}</a></td>
+            <tr>
+              <td><a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.name }}</a></td>
 {% if fermenter.beer %}
-            <td><a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a></td>
+              <td><a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a></td>
 {% else %}
-            <td></td>
+              <td></td>
 {% endif %}
-            <td>{{ fermenter.get_mode_display }}</td>
-            <td>{{ fermenter.setpoint }}</td>
-            <td>{{ fermenter.temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
-          </tr>
+              <td>{{ fermenter.get_mode_display }}</td>
+              <td>{{ fermenter.setpoint }}</td>
+              <td>{{ fermenter.temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
+            </tr>
 {% endfor %}
-        </tbody>
+          </tbody>
 {% endif %}
-      </table>
+        </table>
+      </div>
     </div>
   </div>
 </div>
