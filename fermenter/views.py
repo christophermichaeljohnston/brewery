@@ -27,7 +27,7 @@ def edit(request, pk):
   f = Fermenter.objects.get(pk=pk)
   if request.method == "POST":
     form = FermenterForm(request.POST)
-    if form.is_valid():
+    if "save" in request.POST and form.is_valid():
       if not f.name == request.POST.get("name"):
         f.name = request.POST.get("name")
       if not f.setpoint == Decimal(request.POST.get("setpoint")):
@@ -36,15 +36,6 @@ def edit(request, pk):
       if not f.mode == request.POST.get("mode"):
         Device.serial_cmd(f.component.device.device,"setMode,"+str(f.fid)+","+request.POST.get("mode"))
         f.mode = Device.serial_cmd(f.component.device.device,"getMode,"+str(f.fid))
-      if not f.hysteresis == Decimal(request.POST.get("hysteresis")):
-        Device.serial_cmd(f.component.device.device,"setHysteresis,"+str(f.fid)+","+request.POST.get("hysteresis"))
-        f.hysteresis = Device.serial_cmd(f.component.device.device,"getHysteresis,"+str(f.fid))
-      if not f.pumprun == Decimal(request.POST.get("pumprun")):
-        Device.serial_cmd(f.component.device.device,"setPumpRun,"+str(f.fid)+","+str(Decimal(request.POST.get("pumprun"))*1000))
-        f.pumprun = Decimal(Device.serial_cmd(f.component.device.device, 'getPumpRun,'+str(f.fid)))/1000
-      if not f.pumpdelay == int(request.POST.get("pumpdelay")):
-        Device.serial_cmd(f.component.device.device,"setPumpDelay,"+str(f.fid)+","+str(int(request.POST.get("pumpdelay"))*1000))
-        f.pumpdelay = int(Device.serial_cmd(f.component.device.device, 'getPumpDelay,'+str(f.fid)))/1000
       f.save()
     return redirect('fermenter:detail', pk=f.id)
   else:

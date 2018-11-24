@@ -1,42 +1,38 @@
 {% extends "base/index.html" %}
 {% block content %}
-<div class="container">
-  <div class="card mt-4 mb-4">
+<div class="container-fluid p-3">
+  <div class="card card-table">
     <div class="card-header">
-      Beers
+      <div class="d-flex flex-row">
+        <div>Beers</div>
+        <div class="ml-auto"><a class="btn btn-light btn-sm" href="{% url 'beer:create' %}"><i class="far fa-plus-square"></i> New</a></div>
+      </div>
     </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table mb-0">
-          <thead>
-            <tr>
-              <th>name</th>
-              <th>fermenter</th>
-              <th>created</th>
-            </tr>
-          </thead>
+    <div class="card-body table-responsive">
+      <table class="table table-striped table-borderless">
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>fermenter</th>
+            <th>created</th>
+          </tr>
+        </thead>
 {% if beer_list %}
-          <tbody>
+        <tbody>
 {% for beer in beer_list %}
-            <tr>
-              <td><a href="{% url 'beer:detail' beer.id %}">{{ beer.name }}</a></td>
+          <tr>
+            <td><a class="text-secondary" href="{% url 'beer:detail' beer.id %}">{{ beer.name }}</a></td>
 {% if beer.fermenter %}
-              <td><a href="{% url 'fermenter:detail' beer.fermenter.id %}">{{ beer.fermenter.name }}</a></td>
+            <td><a class="text-secondary" href="{% url 'fermenter:detail' beer.fermenter.id %}">{{ beer.fermenter.name }}</a></td>
 {% else %}
-              <td></td>
+            <td></td>
 {% endif %}
-              <td>{{ beer.created }}</td>
-            </tr>
+            <td>{{ beer.created }}</td>
+          </tr>
 {% endfor %}
-          </tbody>
+        </tbody>
 {% endif %}
-        </table>
-      </div>
-    </div>
-    <div class="row mt-2 mb-2">
-      <div class="col ml-2 text-left">
-        <a class="btn btn-light" href="{% url 'beer:create' %}"><i class="far fa-plus-square"></i> Create</a>
-      </div>
+      </table>
     </div>
   </div>
 </div>

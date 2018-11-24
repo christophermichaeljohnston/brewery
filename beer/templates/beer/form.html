@@ -1,24 +1,13 @@
 {% extends "base/index.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container">
-  <div class="card mt-4 mb-4">
+<div class="container-fluid p-3">
+  <div class="card">
     <div class="card-header">
-      Edit
+      Beer
     </div>
     <div class="card-body">
-      <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <div class="row">
-          <div class="col text-left">
-            <button type="submit" class="btn btn-light">Save</button>
-          </div>
-          <div class="col text-right">
-            <a class="btn btn-light" href="{% if form.instance.pk %}{% url 'beer:detail' beer.id %}{% else %}{% url 'beer:list' %}{% endif %}"><i class="fas fa-arrow-left"></i> Back</a>
-          </div>
-        </div>
-      </form>
+      {% crispy form %}
     </div>
   </div>
 <div>

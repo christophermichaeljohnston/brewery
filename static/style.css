@@ -1,0 +1,55 @@
+.asteriskField { display: none; }
+
+body {
+  font-family: Roboto,Arial,sans-serif;
+  font-size: 0.95rem;
+  color: #404040;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table-borderless thead th {
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table th {
+  padding-top: 8px;
+  padding-left: 8px;
+  padding-bottom: 8px;
+  padding-right: 8px;
+}
+
+.table td {
+  padding-top: 8px;
+  padding-left: 8px;
+  padding-bottom: 8px;
+  padding-right: 8px;
+}
+
+.nav-link {
+  color: #696969;
+}
+
+.card-header {
+  padding-top: 8px;
+  padding-left: 8px;
+  padding-bottom: 8px;
+  padding-right: 8px;
+  font-size: 1.2rem;
+  border-bottom-width: 0;
+  background-color: #fff;
+}
+
+.card-body {
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-bottom: 0px;
+  padding-right: 0px;
+}
+
+form {
+  padding-left: 8px;
+  padding-right: 8px;
+}

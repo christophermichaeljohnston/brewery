@@ -32,9 +32,11 @@ class DetailView(generic.DetailView):
 def create(request):
   if request.method == 'POST':
     form = BeerForm(request.POST)
-    if form.is_valid():
+    if "save" in request.POST and form.is_valid():
       b = Beer.objects.create(name=request.POST.get('name'), created=timezone.now())
-    return redirect('beer:list')
+      return redirect('beer:detail', b.id)
+    else:
+      return redirect('beer:list')
   else:
     form = BeerForm()
     return render(request, 'beer/form.html', {'form': form})
@@ -43,10 +45,10 @@ def edit(request, pk):
   b = Beer.objects.get(pk=pk)
   if request.method == 'POST':
     form = BeerForm(request.POST)
-    if form.is_valid():
+    if "save" in request.POST and form.is_valid():
       b.name = request.POST.get('name')
       b.save()
-    return redirect('beer:list')
+    return redirect('beer:detail', b.id)
   else:
     form = BeerForm(instance=b)
     return render(request, 'beer/form.html', {'form': form, 'beer': b})
@@ -59,12 +61,18 @@ def delete(request, pk):
 def start(request, pk):
   b = Beer.objects.get(pk=pk)
   if request.method == 'POST':
-    form = BeerStartForm(request.POST)
-    f = Fermenter.objects.get(pk=request.POST.get('fermenter'))
-    if form.is_valid():
-      b.fermenter = f
-      b.save()
-    return redirect('fermenter:edit', pk=f.id)
+    if "save" in request.POST:
+      form = BeerStartForm(request.POST)
+      f_id = request.POST.get('fermenter')
+      if form.is_valid() and f_id:
+        f = Fermenter.objects.get(pk=request.POST.get('fermenter'))
+        b.fermenter = f
+        b.save()
+        return redirect('fermenter:edit', pk=f.id)
+      else:
+        return redirect('beer:detail', pk=b.id)
+    else:
+      return redirect('beer:detail', pk=b.id)
   else:
     form = BeerStartForm(instance=b)
     return render(request, 'beer/form.html', {'form': form, 'beer': b})
@@ -72,15 +80,17 @@ def start(request, pk):
 def stop(request, pk):
   b = Beer.objects.get(pk=pk)
   Task.objects.filter(verbose_name__regex=r'ramp.*_'+str(b.fermenter.id)+'$').delete()
+  f = b.fermenter
   b.fermenter = None
   b.save()
-  return redirect('beer:detail', pk)
+  return redirect('fermenter:edit', pk=f.id)
+  #return redirect('beer:detail', pk)
 
 def start_ramp(request, pk):
   b = Beer.objects.get(pk=pk)
   if request.method == 'POST':
-    form = BeerStartForm(request.POST)
-    if form.is_valid():
+    form = BeerRampForm(request.POST)
+    if "save" in request.POST and form.is_valid():
       Fermenter.ramp(b.fermenter, request.POST.get('new_setpoint'), request.POST.get('step'), request.POST.get('interval'))
     return redirect('beer:detail', b.id)
   else:

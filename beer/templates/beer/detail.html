@@ -1,82 +1,91 @@
 {% extends "base/index.html" %}
 {% block content %}
-<div class="container">
-  <div class="card mt-4">
+<div class="container-fluid p-3">
+  <div class="card card-table">
     <div class="card-header">
-      Beer
-    </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>name</th>
-              <th>fermenter</th>
-              <th>mode</th>
-              <th>setpoint</th>
-              <th>temperature</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{ beer.name }}</td>
+      <div class="d-flex flex-row">
+        <div>Beer</div>
+        <div class="btn-toolbar ml-auto" role="toolbar" aria-label="toolbar1">
 {% if beer.fermenter %}
-              <td><a href="{% url 'fermenter:detail' beer.fermenter.id %}">{{ beer.fermenter.name }}</a></td>
-              <td>{{ beer.fermenter.get_mode_display }}</td>
-              <td>{{ beer.fermenter.setpoint }} F</td>
-              <td>{{ beer.temperature_set.last.measured }} F <small><small>({{ beer.temperature_set.last.datetime|timesince }} ago)</small></small></td>
+          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="group1">
+            <a class="btn btn-light" href="{% url 'beer:stop' beer.id %}"><i class="far fa-stop-circle"></i> Stop</a>
+          </div>
+{% if ramp %}
+          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="group2">
+            <a class="btn btn-light" href="{% url 'beer:stop_ramp' beer.id %}"><i class="fas fa-signal"></i> Stop</a>
+          </div>
+{% else %}
+          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="group3">
+            <a class="btn btn-light" href="{% url 'beer:start_ramp' beer.id %}"><i class="fas fa-signal"></i> Start</a>
+          </div>
+{% endif %}
+{% else %}
+          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="group4">
+            <a class="btn btn-light" href="{% url 'beer:start' beer.id %}"><i class="far fa-play-circle"></i> Start</a>
+          </div>
+          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="group5">
+            <a class="btn btn-light" href="{% url 'beer:delete' beer.id %}"><i class="fas fa-minus-circle"></i> Delete</a>
+          </div>
+{% endif %}
+          <div class="btn-group btn-group-sm" role="group" aria-label="group6">
+            <a class="btn btn-light" href="{% url 'beer:edit' beer.id %}"><i class="far fa-edit"></i> Edit</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body table-responsive">
+      <table class="table table-striped table-borderless">
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>fermenter</th>
+            <th>mode</th>
+            <th>setpoint</th>
+            <th>temperature</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ beer.name }}</td>
+{% if beer.fermenter %}
+            <td><a class="text-secondary" href="{% url 'fermenter:detail' beer.fermenter.id %}">{{ beer.fermenter.name }}</a></td>
+            <td>{{ beer.fermenter.get_mode_display }}</td>
+            <td>{{ beer.fermenter.setpoint }} F</td>
+            <td>{{ beer.temperature_set.last.measured }} F <small><small>({{ beer.temperature_set.last.datetime|timesince }} ago)</small></small></td>
 {% if beer.temperature_set.last %}
 {% endif %}
 {% else %}
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
 {% endif %}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="row mt-2 mb-2">
-        <div class="col ml-2 text-left">
-{% if beer.fermenter %}
-          <a class="btn btn-light" href="{% url 'beer:stop' beer.id %}"><i class="far fa-stop-circle"></i> Stop</a>
-{% if ramp %}
-          <a class="btn btn-light" href="{% url 'beer:stop_ramp' beer.id %}"><i class="fas fa-signal"></i> Stop Ramp</a>
-{% else %}
-          <a class="btn btn-light" href="{% url 'beer:start_ramp' beer.id %}"><i class="fas fa-signal"></i> Start Ramp</a>
-{% endif %}
-{% else %}
-          <a class="btn btn-light" href="{% url 'beer:start' beer.id %}"><i class="far fa-play-circle"></i> Start</a>
-          <a class="btn btn-light" href="{% url 'beer:delete' beer.id %}"><i class="fas fa-minus-circle"></i> Delete</a>
-{% endif %}
-          <a class="btn btn-light" href="{% url 'beer:edit' beer.id %}"><i class="far fa-edit"></i> Edit</a>
-        </div>
-        <div class="col mr-2 text-right">
-          <a class="btn btn-light" href="{% url 'beer:list' %}"><i class="fas fa-arrow-left"></i> Back</a>
-        </div>
-      </div>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 {% if beer.temperature_set.count > 0 %}
-  <div class="card mt-4 mb-4">
+  <div class="card mt-4">
     <div class="card-header">
-      History
-    </div>
-    <div class="card-body p-0">
-      <div id="chart" style="min-width: 310px; height: 300px; margin: 0 auto"></div>
-      <div class="row">
-        <div class="col-md-6">
-          <a class="btn btn-default" href="javascript:drawChart('hour');" role="button">Hour</a>
-          <a class="btn btn-default" href="javascript:drawChart('day');" role="button">Day</a>
-          <a class="btn btn-default" href="javascript:drawChart('week');" role="button">Week</a>
-          <a class="btn btn-default" href="javascript:drawChart('all');" role="button">All</a>
+      <div class="d-flex flex-row">
+        <div>History</div>
+        <div class="btn-toolbar ml-auto" role="toolbar" aria-label="toolbar2">
+          <div class="btn-group btn-group-sm" role="group" aria-label="group1">
+          <a class="btn btn-light" href="javascript:drawChart('hour');" role="button">Hour</a>
+          <a class="btn btn-light" href="javascript:drawChart('day');" role="button">Day</a>
+          <a class="btn btn-light" href="javascript:drawChart('week');" role="button">Week</a>
+          <a class="btn btn-light" href="javascript:drawChart('all');" role="button">All</a>
         </div>
       </div>
+    </div>
+    <div class="card-body">
+      <div id="chart" style="min-width: 310px; height: 300px; margin: 0 auto"></div>
     </div>
 {% endif %}
   </div>
 </div>
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
 <script>
 function drawChart(period) {
   $.getJSON('{% url 'beer:chart_data' beer.id %}?period='+period, function(data) {
@@ -132,7 +141,11 @@ function drawChart(period) {
   });
 }
 $(document).ready(function() {
+{% if beer.fermenter %}
   drawChart('day');
+{% else %}
+  drawChart('all');
+{% endif %}
 });
 </script>
 {% endblock content %}

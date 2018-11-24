@@ -12,21 +12,16 @@ from datetime import timedelta
 
 import urllib.request
 
-
 class Fermenter(models.Model):
   MODES = (
     ('0', 'OFF'),
-    ('1', 'CHILL'),
-    ('2', 'HEAT'),
+    ('1', 'ON'),
   )
   component = models.ForeignKey(Component, on_delete=models.CASCADE)
   fid = models.IntegerField()
   name = models.CharField(max_length=16, null=True, blank=True)
   mode = models.CharField(max_length=1, choices=MODES, null=True, blank=True)
   setpoint = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
-  hysteresis = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=True)
-  pumprun = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
-  pumpdelay = models.IntegerField(null=True, blank=True)
   temperature = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
   datetime = models.DateTimeField(null=True, blank=True)
 
@@ -36,25 +31,25 @@ class Fermenter(models.Model):
   @background()
   def probe_temperature(fermenter_id):
     f = Fermenter.objects.get(pk=fermenter_id)
-    urllib.request.urlopen('http://127.0.0.1:8000/fermenter/'+str(f.id)+'/get_temperature/')
+    if f.component:
+      urllib.request.urlopen('http://127.0.0.1:8000/fermenter/'+str(f.id)+'/get_temperature/')
 
   @background()
   def ramp_temperature(fermenter_id, setpoint):
     f = Fermenter.objects.get(pk=fermenter_id)
-    urllib.request.urlopen('http://127.0.0.1:8000/fermenter/'+str(f.id)+'/set_setpoint/?setpoint='+setpoint)
+    if f.component:
+      urllib.request.urlopen('http://127.0.0.1:8000/fermenter/'+str(f.id)+'/set_setpoint/?setpoint='+setpoint)
 
   @classmethod
   def discover(cls, component):
-    for fid in [0,1]:
+    count = int(Device.serial_cmd(component.device.device,'getFermenters'))
+    for fid in range(count):
       try:
         f = cls.objects.get(component=component, fid=fid)
       except Fermenter.DoesNotExist:
         f = cls.objects.create(component=component, fid=fid)
       f.mode = Device.serial_cmd(f.component.device.device,'getMode,'+str(f.fid))
       f.setpoint = Device.serial_cmd(f.component.device.device,'getSetpoint,'+str(f.fid))
-      f.hysteresis = Device.serial_cmd(f.component.device.device,'getHysteresis,'+str(f.fid))
-      f.pumprun = Decimal(Device.serial_cmd(f.component.device.device, 'getPumpRun,'+str(f.fid)))/1000
-      f.pumpdelay = int(Device.serial_cmd(f.component.device.device, 'getPumpDelay,'+str(f.fid)))/1000
       f.save()
       verbose_name="probe_temperature_"+str(f.id)
       try:

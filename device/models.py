@@ -37,6 +37,7 @@ class Device(models.Model):
   def discover(cls):
     from component.models import Component
     cls.initialize()
+    Component.initialize()
     for device in glob.glob(DEVICE_PATH):
       try:
         d = cls.objects.get(device=device)
