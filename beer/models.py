@@ -10,5 +10,6 @@ class Beer(models.Model):
 class Temperature(models.Model):
   beer = models.ForeignKey(Beer, on_delete=models.CASCADE)
   setpoint = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-  measured = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
+  internal = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
+  external = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
   datetime = models.DateTimeField(null=True, blank=True)

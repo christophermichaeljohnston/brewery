@@ -18,11 +18,14 @@ class Fermenter(models.Model):
     ('1', 'ON'),
   )
   component = models.ForeignKey(Component, on_delete=models.CASCADE)
-  fid = models.IntegerField()
   name = models.CharField(max_length=16, null=True, blank=True)
   mode = models.CharField(max_length=1, choices=MODES, null=True, blank=True)
   setpoint = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
-  temperature = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
+  hysteresis = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
+  anticycle = models.IntegerField(null=True, blank=True)
+  antifight = models.IntegerField(null=True, blank=True)
+  internal_temperature = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
+  external_temperature = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
   datetime = models.DateTimeField(null=True, blank=True)
 
   def __str__(self):
@@ -42,20 +45,21 @@ class Fermenter(models.Model):
 
   @classmethod
   def discover(cls, component):
-    count = int(Device.serial_cmd(component.device.device,'getFermenters'))
-    for fid in range(count):
-      try:
-        f = cls.objects.get(component=component, fid=fid)
-      except Fermenter.DoesNotExist:
-        f = cls.objects.create(component=component, fid=fid)
-      f.mode = Device.serial_cmd(f.component.device.device,'getMode,'+str(f.fid))
-      f.setpoint = Device.serial_cmd(f.component.device.device,'getSetpoint,'+str(f.fid))
-      f.save()
-      verbose_name="probe_temperature_"+str(f.id)
-      try:
-        t = Task.objects.get(verbose_name=verbose_name)
-      except Task.DoesNotExist:
-        cls.probe_temperature(f.id, verbose_name=verbose_name, repeat=60)
+    try:
+      f = cls.objects.get(component=component)
+    except Fermenter.DoesNotExist:
+      f = cls.objects.create(component=component)
+    f.mode = Device.serial_cmd(f.component.device.device,'getMode')
+    f.setpoint = Device.serial_cmd(f.component.device.device,'getSetpoint')
+    f.hysteresis = Device.serial_cmd(f.component.device.device,'getHysteresis')
+    f.anticycle = Device.serial_cmd(f.component.device.device,'getAntiCycle')
+    f.antifight = Device.serial_cmd(f.component.device.device,'getAntiFight')
+    f.save()
+    verbose_name="probe_temperature_"+str(f.id)
+    try:
+      t = Task.objects.get(verbose_name=verbose_name)
+    except Task.DoesNotExist:
+      cls.probe_temperature(f.id, verbose_name=verbose_name, repeat=60)
 
   @classmethod
   def ramp(cls, fermenter, new_setpoint, step, interval):

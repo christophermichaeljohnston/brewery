@@ -41,7 +41,8 @@
             <th>fermenter</th>
             <th>mode</th>
             <th>setpoint</th>
-            <th>temperature</th>
+            <th>internal</th>
+            <th>external</th>
           </tr>
         </thead>
         <tbody>
@@ -51,8 +52,9 @@
             <td><a class="text-secondary" href="{% url 'fermenter:detail' beer.fermenter.id %}">{{ beer.fermenter.name }}</a></td>
             <td>{{ beer.fermenter.get_mode_display }}</td>
             <td>{{ beer.fermenter.setpoint }} F</td>
-            <td>{{ beer.temperature_set.last.measured }} F <small><small>({{ beer.temperature_set.last.datetime|timesince }} ago)</small></small></td>
-{% if beer.temperature_set.last %}
+            <td>{{ beer.temperature_set.last.internal }} F <small><small>({{ beer.internal_set.last.datetime|timesince }} ago)</small></small></td>
+            <td>{{ beer.temperature_set.last.external }} F <small><small>({{ beer.external_set.last.datetime|timesince }} ago)</small></small></td>
+{% if beer.internal_set.last %}
 {% endif %}
 {% else %}
             <td></td>
@@ -133,8 +135,13 @@ function drawChart(period) {
         },{
           type: 'spline',
           color: 'blue',
-          name: 'Measured',
-          data: data['data']['measured']
+          name: 'Internal',
+          data: data['data']['internal']
+        },{
+          type: 'spline',
+          color: 'red',
+          name: 'External',
+          data: data['data']['external']
         }]
       });
     });

@@ -30,12 +30,21 @@ def edit(request, pk):
     if "save" in request.POST and form.is_valid():
       if not f.name == request.POST.get("name"):
         f.name = request.POST.get("name")
-      if not f.setpoint == Decimal(request.POST.get("setpoint")):
-        Device.serial_cmd(f.component.device.device,"setSetpoint,"+str(f.fid)+","+request.POST.get("setpoint"))
-        f.setpoint = Device.serial_cmd(f.component.device.device,"getSetpoint,"+str(f.fid))
-      if not f.mode == request.POST.get("mode"):
-        Device.serial_cmd(f.component.device.device,"setMode,"+str(f.fid)+","+request.POST.get("mode"))
-        f.mode = Device.serial_cmd(f.component.device.device,"getMode,"+str(f.fid))
+      if not f.mode == int(request.POST.get("mode")):
+        Device.serial_cmd(f.component.device.device,"setMode,"+request.POST.get('mode'))
+        f.mode = Device.serial_cmd(f.component.device.device,'getMode')
+      if not f.setpoint == Decimal(request.POST.get('setpoint')):
+        Device.serial_cmd(f.component.device.device,'setSetpoint,'+request.POST.get('setpoint'))
+        f.setpoint = Device.serial_cmd(f.component.device.device,'getSetpoint')
+      if not f.hysteresis == Decimal(request.POST.get('hysteresis')):
+        Device.serial_cmd(f.component.device.device,'setHysteresis,'+request.POST.get('hysteresis'))
+        f.hysteresis = Device.serial_cmd(f.component.device.device,'getHysteresis')
+      if not f.anticycle == request.POST.get('anticycle'):
+        Device.serial_cmd(f.component.device.device,'setAntiCycle,'+request.POST.get('anticycle'))
+        f.anticycle = Device.serial_cmd(f.component.device.device,'getAntiCycle')
+      if not f.antifight == request.POST.get('antifight'):
+        Device.serial_cmd(f.component.device.device,'setAntiFight,'+request.POST.get('antifight'))
+        f.antifight = int(Device.serial_cmd(f.component.device.device,'getAntiFight'))
       f.save()
     return redirect('fermenter:detail', pk=f.id)
   else:
@@ -46,12 +55,13 @@ def get_temperature(request, pk):
   from device.models import Device
   from beer.models import Temperature
   f = Fermenter.objects.get(pk=pk)
-  f.temperature = Device.serial_cmd(f.component.device.device, "getTemperature,"+str(f.fid))
+  f.internal_temperature = Device.serial_cmd(f.component.device.device, 'getInternalTemperature')
+  f.external_temperature = Device.serial_cmd(f.component.device.device, 'getExternalTemperature')
   f.datetime = timezone.now()
   f.save()
   if hasattr(f, 'beer'):
-    Temperature.objects.create(beer=f.beer, setpoint=f.setpoint, measured=f.temperature, datetime=timezone.now())
-  return HttpResponse(f.temperature)
+    Temperature.objects.create(beer=f.beer, setpoint=f.setpoint, internal=f.internal_temperature, external=f.external_temperature, datetime=timezone.now())
+  return HttpResponse("internal:" + f.internal_temperature + " external:" + f.external_temperature)
 
 def set_setpoint(request, pk):
   from device.models import Device

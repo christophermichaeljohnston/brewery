@@ -14,7 +14,11 @@
             <th>beer</th>
             <th>mode</th>
             <th>setpoint</th>
-            <th>temperature</th>
+            <th>hysteresis</th>
+            <th>anticycle</th>
+            <th>antifight</th>
+            <th>internal temperature</th>
+            <th>external temperature</th>
           </tr>
         </thead>
 {% if fermenter_list %}
@@ -29,8 +33,12 @@
             <td></td>
 {% endif %}
             <td>{{ fermenter.get_mode_display }}</td>
-            <td>{{ fermenter.setpoint }}</td>
-            <td>{{ fermenter.temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
+            <td>{{ fermenter.setpoint }} F</td>
+            <td>{{ fermenter.hysteresis }} F</td>
+            <td>{{ fermenter.anticycle }} ms</td>
+            <td>{{ fermenter.antifight }} ms</td>
+            <td>{{ fermenter.internal_temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
+            <td>{{ fermenter.external_temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
           </tr>
 {% endfor %}
         </tbody>

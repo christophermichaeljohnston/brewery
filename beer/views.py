@@ -122,13 +122,15 @@ def chart_data(request, pk):
     else:
       div = 60
 
-  ts = b.temperature_set.filter(datetime__gte=delta).extra(select={'timestamp':'unix_timestamp(datetime) div '+str(div)}).values('timestamp').annotate(avg_measured=Avg('measured')).annotate(avg_setpoint=Avg('setpoint')).order_by('timestamp')
+  ts = b.temperature_set.filter(datetime__gte=delta).extra(select={'timestamp':'unix_timestamp(datetime) div '+str(div)}).values('timestamp').annotate(avg_internal=Avg('internal')).annotate(avg_external=Avg('external')).annotate(avg_setpoint=Avg('setpoint')).order_by('timestamp')
 
   response = {}
   response['data'] = {}
   response['data']['setpoint'] = []
-  response['data']['measured'] = []
+  response['data']['internal'] = []
+  response['data']['external'] = []
   for t in ts:
     response['data']['setpoint'].append([t['timestamp']*div*1000,float(t['avg_setpoint'])])
-    response['data']['measured'].append([t['timestamp']*div*1000,float(t['avg_measured'])])
+    response['data']['internal'].append([t['timestamp']*div*1000,float(t['avg_internal'])])
+    response['data']['external'].append([t['timestamp']*div*1000,float(t['avg_external'])])
   return HttpResponse(json.dumps(response), content_type="application/json")

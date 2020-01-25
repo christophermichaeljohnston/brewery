@@ -15,4 +15,4 @@ class FermenterForm(forms.ModelForm):
 
   class Meta:
     model = Fermenter
-    fields = ('name', 'mode', 'setpoint')
+    fields = ('name', 'mode', 'setpoint', 'hysteresis', 'anticycle', 'antifight')
