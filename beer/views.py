@@ -63,8 +63,7 @@ def start(request, pk):
   if request.method == 'POST':
     if "save" in request.POST:
       form = BeerStartForm(request.POST)
-      f_id = request.POST.get('fermenter')
-      if form.is_valid() and f_id:
+      if form.is_valid():
         f = Fermenter.objects.get(pk=request.POST.get('fermenter'))
         b.fermenter = f
         b.save()
@@ -130,7 +129,7 @@ def chart_data(request, pk):
   response['data']['internal'] = []
   response['data']['external'] = []
   for t in ts:
-    response['data']['setpoint'].append([t['timestamp']*div*1000,float(t['avg_setpoint'])])
-    response['data']['internal'].append([t['timestamp']*div*1000,float(t['avg_internal'])])
-    response['data']['external'].append([t['timestamp']*div*1000,float(t['avg_external'])])
+    response['data']['setpoint'].append([t['timestamp']*div*1000,round(t['avg_setpoint'],1)])
+    response['data']['internal'].append([t['timestamp']*div*1000,round(t['avg_internal'],1)])
+    response['data']['external'].append([t['timestamp']*div*1000,round(t['avg_external'],1)])
   return HttpResponse(json.dumps(response), content_type="application/json")

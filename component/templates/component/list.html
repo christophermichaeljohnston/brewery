@@ -1,34 +1,32 @@
 {% extends "base/index.html" %}
 {% block content %}
-<div class="container-fluid p-3">
-  <div class="card card-table">
-    <div class="card-header">
-      Components
-    </div>
-    <div class="card-body table-responsive">
-      <table class="table table-striped table-borderless">
-        <thead>
-          <tr>
-            <th>device</th>
-            <th>type</th>
-            <th>sn</th>
-          </tr>
-        </thead>
-{% if component_list %}
-        <tbody>
+<div class="container-fluid mt-4">
+  <div class="card-deck">
 {% for component in component_list %}
-          <tr>
-            <td>{% if component.device %}{{ component.device.device }}{% else %}
-<a class="btn btn-danger btn-sm" href="{% url 'component:delete' component.id %}"><i class="fas fa-minus-circle"></i> Delete</a>
-{% endif %}</td>
-            <td>{{ component.type }}</td>
-            <td>{{ component.sn }}</td>
-          </tr>
-{% endfor %}
-        </tbody>
+    <div class="d-inline-flex">
+      <div class="card">
+        <div class="card-header text-center">
+{% if component.device %}
+          {{ component.device.device }}
+{% else %}
+          <a class="btn btn-danger btn-sm" href="{% url 'component:delete' component.id %}"><i class="fas fa-minus-circle"></i> Delete</a>
 {% endif %}
-      </table>
-    </div>
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <tr>
+              <th>type</th>
+              <td>{{ component.type }}</td>
+            </tr>
+            <tr>
+              <th>sn</th>
+              <td>{{ component.sn }}</td>
+            </tr>
+          </table>
+        </div>
+      <div>
+    <div>
+{% endfor %}
   </div>
 </div>
 {% endblock content %}

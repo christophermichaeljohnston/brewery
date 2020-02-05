@@ -1,33 +1,27 @@
 {% extends "base/index.html" %}
 {% block content %}
-<div class="container-fluid p-3">
-  <div class="card card-table">
-    <div class="card-header">
-      <div class="d-flex flex-row">
-        <div>Devices</div>
-        <div class="ml-auto"><a class="btn btn-light btn-sm" href="{% url 'device:discover' %}"><i class="fa fa-eye" title="Discover"></i> Discover</a></div>
+<div class="container-fluid mt-4">
+  <div class="card-deck">
+{% for device in device_list %}
+    <div class="d-inline-flex">
+      <div class="card">
+        <div class="card-header text-center">
+          {{ device.device }}
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <tr>
+              <th>connected</th>
+              <td>{{ device.connected }}</t>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
-    <div class="card-body table-responsive">
-      <table class="table table-striped table-borderless">
-        <thead>
-          <tr>
-            <th>device</th>
-            <th>connected</th>
-          </tr>
-        </thead>
-{% if device_list %}
-        <tbody>
-{% for device in device_list %}
-          <tr>
-            <td>{{ device.device }}</td>
-            <td>{{ device.connected }}</td>
-          </tr>
 {% endfor %}
-        </tbody>
-{% endif %}
-      </table>
-    </div>
   </div>
+</div>
+<div class="container-fluid mt-4">
+<a class="btn btn-dark btn-sm" href="{% url 'device:discover' %}"><i class="fa fa-eye" title="Discover"></i> Discover</a>
 </div>
 {% endblock content %}

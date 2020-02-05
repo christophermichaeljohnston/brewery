@@ -1,50 +1,43 @@
 {% extends "base/index.html" %}
 {% block content %}
-<div class="container-fluid p-3">
-  <div class="card card-table">
-    <div class="card-header">
-      Fermenters
-    </div>
-    <div class="card-body table-responsive">
-      <table class="table table-striped table-borderless">
-        <thead>
-          <tr>
-            <th>component</th>
-            <th>name</th>
-            <th>beer</th>
-            <th>mode</th>
-            <th>setpoint</th>
-            <th>hysteresis</th>
-            <th>anticycle</th>
-            <th>antifight</th>
-            <th>internal temperature</th>
-            <th>external temperature</th>
-          </tr>
-        </thead>
-{% if fermenter_list %}
-        <tbody>
+<div class="container-fluid mt-4">
+  <div class="card-deck">
 {% for fermenter in fermenter_list %}
-          <tr>
-            <td>{{ fermenter.component.device.device }}</td>
-            <td><a class="text-secondary" href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.name }}</a></td>
-{% if fermenter.beer %}
-            <td><a class="text-secondary" href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a></td>
-{% else %}
-            <td></td>
-{% endif %}
-            <td>{{ fermenter.get_mode_display }}</td>
-            <td>{{ fermenter.setpoint }} F</td>
-            <td>{{ fermenter.hysteresis }} F</td>
-            <td>{{ fermenter.anticycle }} ms</td>
-            <td>{{ fermenter.antifight }} ms</td>
-            <td>{{ fermenter.internal_temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
-            <td>{{ fermenter.external_temperature}} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
-          </tr>
-{% endfor %}
-        </tbody>
-{% endif %}
-      </table>
+    <div class="d-inline-flex">
+      <div class="card">
+        <div class="card-header">
+          <a href="{% url 'fermenter:detail' fermenter.id %}">{{ fermenter.name }}</a>
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <tr>
+              <th>beer</th>
+              <td>{% if fermenter.beer %}<a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}empty{% endif %}</td>
+            </tr>
+            <tr>
+              <th>mode</th>
+              <td>{{ fermenter.get_mode_display }}</td>
+            </tr>
+            <tr>
+              <th>setpoint</th>
+              <td>{{ fermenter.setpoint }} &#176;F</td>
+            </tr>
+            <tr>
+              <th>internal</th>
+              <td>{{ fermenter.internal_temperature|floatformat }} &#176;F</td>
+            </tr>
+            <tr>
+              <th>external</th>
+              <td>{{ fermenter.external_temperature|floatformat }} &#176;F</td>
+            </tr>
+          </table>
+        </div>
+        <div class="card-footer text-muted text-center">
+          Last updated {{ fermenter.datetime|timesince }} ago
+        </div>
+      </div>
     </div>
+{% endfor %}
   </div>
 </div>
 {% endblock content %}

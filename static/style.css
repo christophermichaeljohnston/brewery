@@ -1,55 +1,86 @@
-.asteriskField { display: none; }
+//.asteriskField { display: none; }
 
 body {
-  font-family: Roboto,Arial,sans-serif;
-  font-size: 0.95rem;
-  color: #404040;
+  background-color: #424242;
+  margin-bottom: 15px;
 }
 
-.table {
-  margin-bottom: 0;
+.navbar {
+  background-color: #212121;
+  color: #e0e0e0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-.table-borderless thead th {
-  border-bottom: 2px solid #dee2e6;
+.navbar-brand {
+  font-size: 1.3rem;
+  font-weight: bold;
 }
 
-.table th {
-  padding-top: 8px;
-  padding-left: 8px;
-  padding-bottom: 8px;
-  padding-right: 8px;
+.jumbotron {
+  background-color: #424242;
+  color: #e0e0e0;
 }
 
-.table td {
-  padding-top: 8px;
-  padding-left: 8px;
-  padding-bottom: 8px;
-  padding-right: 8px;
-}
 
-.nav-link {
-  color: #696969;
+.card {
+  background-color: #212121;
+  color: #e0e0e0;
+  border: none;
 }
 
 .card-header {
-  padding-top: 8px;
-  padding-left: 8px;
-  padding-bottom: 8px;
-  padding-right: 8px;
-  font-size: 1.2rem;
-  border-bottom-width: 0;
-  background-color: #fff;
+  background-color: #212121;
+  border: none;
+  font-size: 1.0rem;
+  font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .card-body {
-  padding-top: 0px;
-  padding-left: 0px;
-  padding-bottom: 0px;
-  padding-right: 0px;
+  background-color: #212121;
+  border: none;
+  font-size: 0.8rem;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-form {
-  padding-left: 8px;
-  padding-right: 8px;
+.card-footer {
+  background-color: #212121;
+  border: none;
+  font-size: 0.6rem;
+}
+
+.bg-dark {
+  background-color: #212121!important;
+}
+
+.btn-dark {
+  background-color: #303030;
+  color: #e0e0e0;
+  border-color: #424242;
+}
+
+.table {
+  color: #e0e0e0;
+  margin-bottom: 0;
+}
+
+.table th {
+  border-top: 1px solid #424242;
+  font-size: 0.7rem;
+  font-weight: normal;
+}
+
+.table td {
+  border-top: 1px solid #424242;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.form-control {
+  background-color: #303030;
+  color: #e0e0e0;
+  border: 1px solid #424242;
 }

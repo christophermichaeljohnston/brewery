@@ -67,7 +67,7 @@ def set_setpoint(request, pk):
   from device.models import Device
   setpoint = request.GET.get('setpoint')
   f = Fermenter.objects.get(pk=pk)
-  Device.serial_cmd(f.component.device.device, "setSetpoint,"+str(f.fid)+','+setpoint)
-  f.setpoint = Device.serial_cmd(f.component.device.device, "getSetpoint,"+str(f.fid))
+  Device.serial_cmd(f.component.device.device, 'setSetpoint,'+setpoint)
+  f.setpoint = Device.serial_cmd(f.component.device.device, 'getSetpoint')
   f.save()
   return HttpResponse(f.setpoint)
