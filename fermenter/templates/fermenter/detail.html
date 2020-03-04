@@ -1,66 +1,62 @@
 {% extends "base/index.html" %}
 {% block content %}
-<div class="container-fluid p-3">
-  <div class="card card-table">
-    <div class="card-header">
-      <div class="d-flex flex-row">
-        <div>Fermenter</div>
-        <div class="btn-toolbar ml-auto" role="toolbar" aria-label="toolbar1">
-{% if not fermenter.beer %}
-          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="group1">
-            <a class="btn btn-light btn-sm" href="{% url 'beer:create' %}"><i class="far fa-plus-square"></i> New</a>
-          </div>
-{% endif %}
-          <div class="btn-group btn-group-sm mr-2" role="group" aria-label="group1">
-            <a class="btn btn-light btn-sm" href="{% url 'fermenter:edit' fermenter.id %}"><i class="far fa-edit"></i> Edit</a>
-          </div>
-        </div>  
+<div class="container-fluid mt-4">
+  <div class="card-deck">
+    <div class="card">
+      <div class="card-header">
+       {{ fermenter.name }}
       </div>
-    </div>
-    <div class="card-body table-responsive">
-      <table class="table table-borderless table-striped">
-        <thead>
+      <div class="card-body">
+        <table class="table">
           <tr>
-            <th>name</th>
             <th>beer</th>
-            <th>mode</th>
-            <th>setpoint</th>
-            <th>temperature</th>
+            <td>{% if fermenter.beer %}<a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}<a href="{% url 'fermenter:new_beer' fermenter.id %}"><i class="far fa-plus-square"></i> New</a>{% endif %}</td>
           </tr>
-        </thead>
-        <tbody>
           <tr>
-            <td>{{ fermenter.name }}</td>
-            <td>{% if fermenter.beer %}<a class="text-secondary" href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}empty{% endif %}</td>
-            <td>{{ fermenter.get_mode_display }}</td>
-            <td>{{ fermenter.setpoint }} F</td>
-            <td>{{ fermenter.temperature }} F <small><small>({{ fermenter.datetime|timesince }} ago)</small></small></td>
+            <th>setpoint</th>
+            <td>{{ fermenter.setpoint }} &#176;F</td>
           </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-{% if fermenter.beer.temperature_set.count > 0 %}
-  <div class="card card-table mt-4">
-    <div class="card-header">
-      <div class="d-flex flex-row">
-        <div>History</div>
-        <div class="btn-toolbar ml-auto" role="toolbar" aria-label="toolbar2">
-          <div class="btn-group btn-group-sm" role="group" aria-label="group1">
-            <a class="btn btn-light" href="javascript:drawChart('hour');" role="button">Hour</a>
-            <a class="btn btn-light" href="javascript:drawChart('day');" role="button">Day</a>
-            <a class="btn btn-light" href="javascript:drawChart('week');" role="button">Week</a>
-            <a class="btn btn-light" href="javascript:drawChart('all');" role="button">All</a>
-          </div>
-        </div>
+          <tr>
+            <th>temperature</th>
+            <td>{{ fermenter.temperature|floatformat }} &#176;F</td>
+          </tr>
+        </table>
+      </div>
+      <div class="card-footer text-muted text-center">
+        Last updated {{ fermenter.date|timesince }} ago
       </div>
     </div>
-    <div class="card-body">
-      <div id="chart" style="min-width: 310px; height: 300px; margin: 0 auto"></div>
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col text-left">Settings</div>
+          <div class="col text-right"><a href="{% url 'fermenter:edit' fermenter.id %}"><i class="far fa-edit"></i> Edit</a></div>
+      </div>
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <tr>
+            <th>mode</th>
+            <td>{{ fermenter.get_mode_display }}</td>
+          </tr>
+          <tr>
+            <th>hysteresis</th>
+            <td>{{ fermenter.hysteresis }} &#176;F</td>
+          </tr>
+          <tr>
+            <th>anticycle</th>
+            <td>{{ fermenter.anticycle }} ms</td>
+          </tr>
+        </table>
+      </div>
+      <div class="card-footer text-muted">
+      </div>
     </div>
   </div>
-{% endif %}
-  <div class="card card-table mt-4">
+</div>
+
+<div class="container-fluid mt-4">
+  <div class="card card-table">
     <div class="card-header">
       Tasks
     </div>
@@ -86,65 +82,4 @@
     </div>
   </div>
 </div>
-{% if fermenter.beer %}
-<script src="https://code.highcharts.com/highcharts.src.js"></script>
-<script>
-function drawChart(period) {
-  $.getJSON('{% url 'beer:chart_data' fermenter.beer.id %}?period='+period, function(data) {
-    $(function () {
-      Highcharts.setOptions({
-        global: {
-          useUTC: false,
-        }
-      });
-      $('#chart').highcharts({
-        plotOptions: {
-          series: {
-            marker: {
-              enabled: false
-            }
-          }
-        },
-        chart: {
-          zoomType: 'x'
-        },
-        credits: {
-          enabled: false
-        },
-        title: {
-          text: ''
-        },
-        xAxis: {
-          type: 'datetime',
-        },
-        yAxis: {
-          title: { text: '' },
-          startOnTick: false,
-          endOnTick: false,
-          minPadding: 0.1,
-          maxPadding: 0.1
-        },
-        legend: {
-          enabled: false
-        },
-        series: [{
-          type: 'spline',
-          color: 'black',
-          name: 'Setpoint',
-          data: data['data']['setpoint']
-        },{
-          type: 'spline',
-          color: 'blue',
-          name: 'Measured',
-          data: data['data']['measured']
-        }]
-      });
-    });
-  });
-}
-$(document).ready(function() {
-  drawChart('day');
-});
-</script>
-{% endif %}
 {% endblock content %}

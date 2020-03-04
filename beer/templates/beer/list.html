@@ -1,37 +1,35 @@
 {% extends "base/index.html" %}
 {% block content %}
-<div class="container-fluid p-3">
-  <div class="card card-table">
+<div class="container-fluid mb-4">
+  <div class="card">
     <div class="card-header">
       <div class="d-flex flex-row">
         <div>Beers</div>
-        <div class="ml-auto"><a class="btn btn-light btn-sm" href="{% url 'beer:create' %}"><i class="far fa-plus-square"></i> New</a></div>
+        <div class="btn-toolbar ml-auto" role="toolbar" aria-label="fermenter_toolbar">
+          <div class="btn-group btn-group-sm" role="group" aria-label="fermenter_group">
+            <a class="btn btn-dark" href="{% url 'beer:create' %}">New</a>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="card-body table-responsive">
-      <table class="table table-striped table-borderless">
-        <thead>
-          <tr>
-            <th>name</th>
-            <th>fermenter</th>
-            <th>created</th>
-          </tr>
-        </thead>
-{% if beer_list %}
-        <tbody>
+    <div class="card-body">
+      <table class="table table-responsive">
+        <tr>
+          <th>Name</th>
+          <th>Fermenter</th>
+          <th class="col-sm">Last Updated</th>
+        </tr>
 {% for beer in beer_list %}
-          <tr>
-            <td><a class="text-secondary" href="{% url 'beer:detail' beer.id %}">{{ beer.name }}</a></td>
+        <tr>
+          <td class="text-nowrap"><a href="{% url 'beer:detail' beer.id %}">{{ beer.name }}</a></td>
 {% if beer.fermenter %}
-            <td><a class="text-secondary" href="{% url 'fermenter:detail' beer.fermenter.id %}">{{ beer.fermenter.name }}</a></td>
+          <td><a  href="{% url 'fermenter:detail' beer.fermenter.id %}">{{ beer.fermenter.name }}</a></td>
 {% else %}
-            <td></td>
+          <td></td>
 {% endif %}
-            <td>{{ beer.created }}</td>
-          </tr>
+          <td class= "text-nowrap">{{ beer.last_log }}</td>
+        </tr>
 {% endfor %}
-        </tbody>
-{% endif %}
       </table>
     </div>
   </div>
