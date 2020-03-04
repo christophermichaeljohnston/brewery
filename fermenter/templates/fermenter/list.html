@@ -23,17 +23,13 @@
               <td>{{ fermenter.setpoint }} &#176;F</td>
             </tr>
             <tr>
-              <th>internal</th>
-              <td>{{ fermenter.internal_temperature|floatformat }} &#176;F</td>
-            </tr>
-            <tr>
-              <th>external</th>
-              <td>{{ fermenter.external_temperature|floatformat }} &#176;F</td>
+              <th>temperature</th>
+              <td>{{ fermenter.temperature|floatformat }} &#176;F</td>
             </tr>
           </table>
         </div>
         <div class="card-footer text-muted text-center">
-          Last updated {{ fermenter.datetime|timesince }} ago
+          Last updated {{ fermenter.date|timesince }} ago
         </div>
       </div>
     </div>

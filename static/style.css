@@ -1,4 +1,4 @@
-//.asteriskField { display: none; }
+.asteriskField { display: none; }
 
 body {
   background-color: #424242;
@@ -22,7 +22,6 @@ body {
   color: #e0e0e0;
 }
 
-
 .card {
   background-color: #212121;
   color: #e0e0e0;
@@ -32,7 +31,7 @@ body {
 .card-header {
   background-color: #212121;
   border: none;
-  font-size: 1.0rem;
+  font-size: 1.1rem;
   font-weight: bold;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -73,6 +72,20 @@ body {
   font-weight: normal;
 }
 
+table.recipe td {
+  font-weight: normal;
+  font-size: 0.8rem;
+}
+
+table.log td {
+  font-size: 0.8rem;
+}
+
+table.log td.log_date {
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+
 .table td {
   border-top: 1px solid #424242;
   font-size: 0.9rem;
@@ -83,4 +96,13 @@ body {
   background-color: #303030;
   color: #e0e0e0;
   border: 1px solid #424242;
+}
+
+pre {
+  background-color: #212121;
+  color: #e0e0e0;
+}
+
+.form-control {
+  font-size: 0.8rem;
 }

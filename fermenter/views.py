@@ -3,8 +3,9 @@ from django.http import HttpResponse
 from django.views import generic
 from django.utils import timezone
 
-from .forms import FermenterForm
+from .forms import FermenterForm, NewBeerForm
 from .models import Fermenter
+from beer.models import Beer
 
 from decimal import Decimal
 from background_task.models import Task
@@ -28,46 +29,43 @@ def edit(request, pk):
   if request.method == "POST":
     form = FermenterForm(request.POST)
     if "save" in request.POST and form.is_valid():
-      if not f.name == request.POST.get("name"):
-        f.name = request.POST.get("name")
-      if not f.mode == int(request.POST.get("mode")):
-        Device.serial_cmd(f.component.device.device,"setMode,"+request.POST.get('mode'))
-        f.mode = Device.serial_cmd(f.component.device.device,'getMode')
-      if not f.setpoint == Decimal(request.POST.get('setpoint')):
-        Device.serial_cmd(f.component.device.device,'setSetpoint,'+request.POST.get('setpoint'))
-        f.setpoint = Device.serial_cmd(f.component.device.device,'getSetpoint')
-      if not f.hysteresis == Decimal(request.POST.get('hysteresis')):
-        Device.serial_cmd(f.component.device.device,'setHysteresis,'+request.POST.get('hysteresis'))
-        f.hysteresis = Device.serial_cmd(f.component.device.device,'getHysteresis')
-      if not f.anticycle == request.POST.get('anticycle'):
-        Device.serial_cmd(f.component.device.device,'setAntiCycle,'+request.POST.get('anticycle'))
-        f.anticycle = Device.serial_cmd(f.component.device.device,'getAntiCycle')
-      if not f.antifight == request.POST.get('antifight'):
-        Device.serial_cmd(f.component.device.device,'setAntiFight,'+request.POST.get('antifight'))
-        f.antifight = int(Device.serial_cmd(f.component.device.device,'getAntiFight'))
-      f.save()
+      f.name = request.POST.get('name')
+      f.set_mode(request.POST.get('mode'))
+      f.set_setpoint(request.POST.get('setpoint'))
+      f.set_hysteresis(request.POST.get('hysteresis'))
+      f.set_anticycle(request.POST.get('anticycle'))
     return redirect('fermenter:detail', pk=f.id)
   else:
     form = FermenterForm(instance=f)
     return render(request, 'fermenter/form.html', {'form': form, 'fermenter': f})
 
+def new_beer(request, pk):
+  f = Fermenter.objects.get(pk=pk)
+  if request.method == 'POST':
+    form = NewBeerForm(request.POST)
+    if "save" in request.POST and form.is_valid():
+      b = Beer.objects.create(name=request.POST.get('name'), created=timezone.now())
+      b.fermenter = f
+      b.save()
+    return redirect('fermenter:detail', pk=f.id)
+  else:
+    form = NewBeerForm()
+    return render(request, 'fermenter/form.html', {'form': form})
+
 def get_temperature(request, pk):
   from device.models import Device
   from beer.models import Temperature
   f = Fermenter.objects.get(pk=pk)
-  f.internal_temperature = Device.serial_cmd(f.component.device.device, 'getInternalTemperature')
-  f.external_temperature = Device.serial_cmd(f.component.device.device, 'getExternalTemperature')
-  f.datetime = timezone.now()
+  f.temperature = Device.serial_cmd(f.component.device.device, 'getTemperature,'+str(f.fid))
+  f.date = timezone.now()
   f.save()
   if hasattr(f, 'beer'):
-    Temperature.objects.create(beer=f.beer, setpoint=f.setpoint, internal=f.internal_temperature, external=f.external_temperature, datetime=timezone.now())
-  return HttpResponse("internal:" + f.internal_temperature + " external:" + f.external_temperature)
+    Temperature.objects.create(beer=f.beer, setpoint=f.setpoint, temperature=f.temperature, date=timezone.now())
+  return HttpResponse("temperature:" + f.temperature)
 
 def set_setpoint(request, pk):
   from device.models import Device
   setpoint = request.GET.get('setpoint')
   f = Fermenter.objects.get(pk=pk)
-  Device.serial_cmd(f.component.device.device, 'setSetpoint,'+setpoint)
-  f.setpoint = Device.serial_cmd(f.component.device.device, 'getSetpoint')
-  f.save()
+  f.set_setpoint(setpoint)
   return HttpResponse(f.setpoint)

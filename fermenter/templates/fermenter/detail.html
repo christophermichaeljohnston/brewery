@@ -10,24 +10,20 @@
         <table class="table">
           <tr>
             <th>beer</th>
-            <td>{% if fermenter.beer %}<a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}empty{% endif %}</td>
+            <td>{% if fermenter.beer %}<a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}<a href="{% url 'fermenter:new_beer' fermenter.id %}"><i class="far fa-plus-square"></i> New</a>{% endif %}</td>
           </tr>
           <tr>
             <th>setpoint</th>
             <td>{{ fermenter.setpoint }} &#176;F</td>
           </tr>
           <tr>
-            <th>internal</th>
-            <td>{{ fermenter.internal_temperature|floatformat }} &#176;F</td>
-          </tr>
-          <tr>
-            <th>external</th>
-            <td>{{ fermenter.external_temperature|floatformat }} &#176;F</td>
+            <th>temperature</th>
+            <td>{{ fermenter.temperature|floatformat }} &#176;F</td>
           </tr>
         </table>
       </div>
       <div class="card-footer text-muted text-center">
-        Last updated {{ fermenter.datetime|timesince }} ago
+        Last updated {{ fermenter.date|timesince }} ago
       </div>
     </div>
     <div class="card">
@@ -51,10 +47,6 @@
             <th>anticycle</th>
             <td>{{ fermenter.anticycle }} ms</td>
           </tr>
-          <tr>
-            <th>antifight</th>
-            <td>{{ fermenter.antifight }} ms</td>
-          </tr>
         </table>
       </div>
       <div class="card-footer text-muted">
@@ -62,29 +54,6 @@
     </div>
   </div>
 </div>
-
-{% if fermenter.beer.temperature_set.count > 0 %}
-<div class="container-fluid mt-4">
-  <div class="card card-table">
-    <div class="card-header">
-      <div class="d-flex flex-row">
-        <div>Graph</div>
-        <div class="btn-toolbar ml-auto" role="toolbar" aria-label="toolbar2">
-          <div class="btn-group btn-group-sm" role="group" aria-label="group1">
-            <a class="btn btn-dark" href="javascript:drawChart('hour');" role="button">Hour</a>
-            <a class="btn btn-dark" href="javascript:drawChart('day');" role="button">Day</a>
-            <a class="btn btn-dark" href="javascript:drawChart('week');" role="button">Week</a>
-            <a class="btn btn-dark" href="javascript:drawChart('all');" role="button">All</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div id="chart" style="min-width: 310px; height: 300px; margin: 0 auto"></div>
-    </div>
-  </div>
-</div>
-{% endif %}
 
 <div class="container-fluid mt-4">
   <div class="card card-table">
@@ -113,74 +82,4 @@
     </div>
   </div>
 </div>
-{% if fermenter.beer %}
-<script src="https://code.highcharts.com/highcharts.src.js"></script>
-<script>
-function drawChart(period) {
-  $.getJSON('{% url 'beer:chart_data' fermenter.beer.id %}?period='+period, function(data) {
-    $(function () {
-      Highcharts.setOptions({
-        global: {
-          useUTC: false,
-        }
-      });
-      $('#chart').highcharts({
-        plotOptions: {
-          series: {
-            marker: {
-              enabled: false
-            }
-          }
-        },
-        chart: {
-          backgroundColor: '#212121',
-          zoomType: 'x'
-        },
-        credits: {
-          enabled: false
-        },
-        title: {
-          text: ''
-        },
-        xAxis: {
-          type: 'datetime',
-        },
-        yAxis: {
-          title: { text: '' },
-          startOnTick: false,
-          endOnTick: false,
-          minPadding: 0.1,
-          maxPadding: 0.1
-        },
-        legend: {
-          enabled: true,
-          itemStyle: { "color": "#e0e0e0" },
-          itemHoverStyle: { "color": "#ffffff" },
-          itemHiddenStyle: { "color": "#606060" }
-        },
-        series: [{
-          type: 'spline',
-          color: '#ca3e47',
-          name: 'External',
-          data: data['data']['external']
-        },{
-          type: 'spline',
-          color: '#46b5d1',
-          name: 'Internal',
-          data: data['data']['internal']
-        },{
-          type: 'spline',
-          color: '#a7d129',
-          name: 'Setpoint',
-          data: data['data']['setpoint']
-        }]
-      });
-    });
-  });
-}
-$(document).ready(function() {
-  drawChart('day');
-});
-</script>
-{% endif %}
 {% endblock content %}
