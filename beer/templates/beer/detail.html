@@ -36,8 +36,12 @@
               <td>{{ beer.fermenter.setpoint|floatformat }} &#176;F</td>
             </tr>
             <tr>
-              <th>temperature</th>
-              <td>{{ beer.fermenter.temperature|floatformat }} &#176;F</td>
+              <th>internal temperature</th>
+              <td>{{ beer.fermenter.internal_temperature|floatformat }} &#176;F</td>
+            </tr>
+            <tr>
+              <th>external temperature</th>
+              <td>{{ beer.fermenter.external_temperature|floatformat }} &#176;F</td>
             </tr>
             <tr>
           </table>
@@ -192,8 +196,13 @@ function drawChart(period) {
         series: [{
           type: 'spline',
           color: '#46b5d1',
-          name: 'Temperature',
-          data: data['data']['temperature']
+          name: 'Internal',
+          data: data['data']['internal_temperature']
+        },{
+          type: 'spline',
+          color: '#ff5959',
+          name: 'External',
+          data: data['data']['external_temperature']
         },{
           type: 'spline',
           color: '#a7d129',
