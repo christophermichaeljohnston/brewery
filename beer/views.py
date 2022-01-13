@@ -70,6 +70,12 @@ def delete(request, pk):
   b.delete()
   return redirect('beer:list')
 
+def copy(request, pk):
+  b = Beer.objects.get(pk=pk)
+  new_beer = Beer.objects.create(name=b.name, recipe=b.recipe)
+  Log.objects.create(beer=new_beer, log='Created', date=timezone.now())
+  return redirect('beer:detail', new_beer.id)
+
 def edit_log(request, pk, log):
   l = Log.objects.get(pk=log)
   if request.method == 'POST':

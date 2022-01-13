@@ -9,6 +9,7 @@ urlpatterns = [
   url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
   url(r'^(?P<pk>[0-9]+)/edit/$', views.edit, name='edit'),
   url(r'^(?P<pk>[0-9]+)/delete/$', views.delete, name='delete'),
+  url(r'^(?P<pk>[0-9]+)/copy/$', views.copy, name='copy'),
   url(r'^(?P<pk>[0-9]+)/edit_log/(?P<log>[0-9]+)$', views.edit_log, name='edit_log'),
   url(r'^(?P<pk>[0-9]+)/delete_log/(?P<log>[0-9]+)$', views.delete_log, name='delete_log'),
   url(r'^(?P<pk>[0-9]+)/start_fermenter/$', views.start_fermenter, name='start_fermenter'),
