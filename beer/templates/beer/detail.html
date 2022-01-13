@@ -154,11 +154,13 @@ Logs
 function drawChart(period) {
   $.getJSON('{% url 'beer:chart_data' beer.id %}?period='+period, function(data) {
     $(function () {
-      Highcharts.setOptions({
-        global: {
-          useUTC: false,
-        }
-      });
+const timezone = new Date().getTimezoneOffset()
+
+Highcharts.setOptions({
+    global: {
+        timezoneOffset: timezone*2,
+    }
+});
       $('#chart').highcharts({
         plotOptions: {
           series: {
