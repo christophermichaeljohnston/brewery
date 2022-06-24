@@ -218,7 +218,7 @@ Highcharts.setOptions({
 }
 $(document).ready(function() {
 {% if beer.fermenter %}
-  drawChart('day');
+  drawChart('hour');
 {% else %}
   drawChart('all');
 {% endif %}
