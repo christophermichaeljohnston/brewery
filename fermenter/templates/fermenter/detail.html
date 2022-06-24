@@ -10,15 +10,19 @@
         <table class="table">
           <tr>
             <th>beer</th>
-            <td>{% if fermenter.beer %}<a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}<a href="{% url 'fermenter:new_beer' fermenter.id %}"><i class="far fa-plus-square"></i> New</a>{% endif %}</td>
+            <td>{% if fermenter.beer %}<a href="{% url 'beer:detail' fermenter.beer.id %}">{{ fermenter.beer.name }}</a>{% else %}empty{% endif %}</td>
           </tr>
           <tr>
             <th>setpoint</th>
             <td>{{ fermenter.setpoint }} &#176;F</td>
           </tr>
           <tr>
-            <th>temperature</th>
-            <td>{{ fermenter.temperature|floatformat }} &#176;F</td>
+            <th>internal temperature</th>
+            <td>{{ fermenter.internal_temperature|floatformat }} &#176;F</td>
+          </tr>
+          <tr>
+            <th>external temperature</th>
+            <td>{{ fermenter.external_temperature|floatformat }} &#176;F</td>
           </tr>
         </table>
       </div>
@@ -46,6 +50,10 @@
           <tr>
             <th>anticycle</th>
             <td>{{ fermenter.anticycle }} ms</td>
+          </tr>
+          <tr>
+            <th>antifight</th>
+            <td>{{ fermenter.antifight }} ms</td>
           </tr>
         </table>
       </div>

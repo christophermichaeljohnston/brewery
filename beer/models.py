@@ -19,5 +19,6 @@ class Log(models.Model):
 class Temperature(models.Model):
   beer = models.ForeignKey(Beer, on_delete=models.CASCADE)
   setpoint = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-  temperature = models.DecimalField(max_digits=7, decimal_places=4, null=True)
+  internal_temperature = models.DecimalField(max_digits=7, decimal_places=4, null=True)
+  external_temperature = models.DecimalField(max_digits=7, decimal_places=4, null=True)
   date = models.DateTimeField(null=True)

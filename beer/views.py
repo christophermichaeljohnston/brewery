@@ -70,6 +70,12 @@ def delete(request, pk):
   b.delete()
   return redirect('beer:list')
 
+def copy(request, pk):
+  b = Beer.objects.get(pk=pk)
+  new_beer = Beer.objects.create(name=b.name, recipe=b.recipe)
+  Log.objects.create(beer=new_beer, log='Created', date=timezone.now())
+  return redirect('beer:detail', new_beer.id)
+
 def edit_log(request, pk, log):
   l = Log.objects.get(pk=log)
   if request.method == 'POST':
@@ -161,13 +167,16 @@ def chart_data(request, pk):
     else:
       div = 60
 
-  ts = b.temperature_set.filter(date__gte=delta).extra(select={'timestamp':'unix_timestamp(date) div '+str(div)}).values('timestamp').annotate(avg_temperature=Avg('temperature')).annotate(avg_setpoint=Avg('setpoint')).order_by('timestamp')
+  ts = b.temperature_set.filter(date__gte=delta).extra(select={'timestamp':'unix_timestamp(date) div '+str(div)}).values('timestamp').annotate(avg_internal_temperature=Avg('internal_temperature')).annotate(avg_external_temperature=Avg('external_temperature')).annotate(avg_setpoint=Avg('setpoint')).order_by('timestamp')
 
   response = {}
   response['data'] = {}
   response['data']['setpoint'] = []
-  response['data']['temperature'] = []
+  response['data']['internal_temperature'] = []
+  response['data']['external_temperature'] = []
   for t in ts:
     response['data']['setpoint'].append([t['timestamp']*div*1000,round(t['avg_setpoint'],1)])
-    response['data']['temperature'].append([t['timestamp']*div*1000,round(t['avg_temperature'],1)])
+    response['data']['internal_temperature'].append([t['timestamp']*div*1000,round(t['avg_internal_temperature'],1)])
+    if t['avg_external_temperature']:
+      response['data']['external_temperature'].append([t['timestamp']*div*1000,round(t['avg_external_temperature'],1)])
   return HttpResponse(json.dumps(response), content_type="application/json")

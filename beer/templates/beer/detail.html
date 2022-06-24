@@ -11,7 +11,7 @@
             <div>Fermenter</div>
             <div class="btn-toolbar ml-auto" role="toolbar" aria-label="fermenter_toolbar">
               <div class="btn-group btn-group-sm" role="group" aria-label="fermenter_group">
-                <a class="btn btn-dark" href="{% url 'beer:edit_fermenter' beer.id %}"><i class="fas fa-flask"></i> Edit</a>
+                <a class="btn btn-dark" href="{% url 'beer:edit_fermenter' beer.id %}"><i class="fas fa-edit"></i> Edit</a>
 {% if ramp %}
                 <a class="btn btn-dark" href="{% url 'beer:stop_ramp' beer.id %}"><i class="fas fa-signal"></i> Stop</a>
 {% else %}
@@ -36,8 +36,12 @@
               <td>{{ beer.fermenter.setpoint|floatformat }} &#176;F</td>
             </tr>
             <tr>
-              <th>temperature</th>
-              <td>{{ beer.fermenter.temperature|floatformat }} &#176;F</td>
+              <th>internal temperature</th>
+              <td>{{ beer.fermenter.internal_temperature|floatformat }} &#176;F</td>
+            </tr>
+            <tr>
+              <th>external temperature</th>
+              <td>{{ beer.fermenter.external_temperature|floatformat }} &#176;F</td>
             </tr>
             <tr>
           </table>
@@ -79,11 +83,12 @@
         <div class="btn-toolbar ml-auto" role="toolbar" aria-label="beer_toolbar">
           <div class="btn-group btn-group-sm" role="group" aria-label="beer__group">
             <a class="btn btn-dark" href="{% url 'beer:edit' beer.id %}"><i class="far fa-edit"></i> Edit</a>
+            <a class="btn btn-dark" href="{% url 'beer:copy' beer.id %}"><i class="far fa-copy"></i> Copy</a>
 {% if not beer.fermenter %}
-            <a class="btn btn-dark" href="{% url 'beer:start_fermenter' beer.id %}"><i class="fas fa-flask"></i> Start</a>
             <a class="btn btn-dark" href="{% url 'beer:delete' beer.id %}"><i class="fas fa-trash"></i> Delete</a>
+            <a class="btn btn-dark" href="{% url 'beer:start_fermenter' beer.id %}"><i class="fas fa-play"></i> Start</a>
 {% else %}
-            <a class="btn btn-dark" href="{% url 'beer:stop_fermenter' beer.id %}"><i class="fas fa-flask"></i> Stop</a>
+            <a class="btn btn-dark" href="{% url 'beer:stop_fermenter' beer.id %}"><i class="fas fa-stop"></i> Stop</a>
 {% endif %}
           </div>
         </div>
@@ -150,11 +155,13 @@ Logs
 function drawChart(period) {
   $.getJSON('{% url 'beer:chart_data' beer.id %}?period='+period, function(data) {
     $(function () {
-      Highcharts.setOptions({
-        global: {
-          useUTC: false,
-        }
-      });
+const timezone = new Date().getTimezoneOffset()
+
+Highcharts.setOptions({
+    global: {
+        timezoneOffset: timezone*2,
+    }
+});
       $('#chart').highcharts({
         plotOptions: {
           series: {
@@ -192,8 +199,13 @@ function drawChart(period) {
         series: [{
           type: 'spline',
           color: '#46b5d1',
-          name: 'Temperature',
-          data: data['data']['temperature']
+          name: 'Internal',
+          data: data['data']['internal_temperature']
+        },{
+          type: 'spline',
+          color: '#ff5959',
+          name: 'External',
+          data: data['data']['external_temperature']
         },{
           type: 'spline',
           color: '#a7d129',
@@ -206,7 +218,7 @@ function drawChart(period) {
 }
 $(document).ready(function() {
 {% if beer.fermenter %}
-  drawChart('day');
+  drawChart('hour');
 {% else %}
   drawChart('all');
 {% endif %}
